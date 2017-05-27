@@ -38,6 +38,21 @@ public class DatabaseManager {
         return instance;
     }
 
+    private synchronized SQLiteDatabase openDatabase (){
+        //increase the number of databases
+        if (openCounter.incrementAndGet() == 1){
+            database = databaseHelper.getWritableDatabase();
+        }
 
+        return database;
+    }
+
+    public synchronized void closeDatabase(){
+        //decreasing the number of databases
+        if (openCounter.decrementAndGet() == 0){
+            //closing the connections if none
+            database.close();
+        }
+    }
 
 }
