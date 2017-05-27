@@ -13,7 +13,7 @@ import daniel.com.br.crud.model.IBookDao;
  * Created by Dias on 27/05/2017.
  */
 
-public class IBookDaoSQLite implements IBookDao {
+public class BookDaoSQLite implements IBookDao {
 
     interface Table {
         String COLUMN_ID = "id";
@@ -24,7 +24,7 @@ public class IBookDaoSQLite implements IBookDao {
     private SQLiteDatabase database;
     private Context context;
 
-    public IBookDaoSQLite(SQLiteDatabase database, Context context){
+    public BookDaoSQLite(SQLiteDatabase database, Context context){
         this.database = database;
         this.context = context;
     }

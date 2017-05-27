@@ -22,12 +22,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creating tables
-        db.execSQL(IBookDaoSQLite.getCreateTable(context));
+        db.execSQL(BookDaoSQLite.getCreateTable(context));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(IBookDaoSQLite.getDropTable(context));
+        db.execSQL(BookDaoSQLite.getDropTable(context));
         onCreate(db);
     }
 }
