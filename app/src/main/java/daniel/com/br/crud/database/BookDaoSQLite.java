@@ -73,7 +73,10 @@ public class BookDaoSQLite implements IBookDao {
     @Override
     public List<Book> selectBooks() {
 
-        Cursor cursor = null;
+        //I am sorry...
+        final Cursor[] result = new Cursor[1];
+        final List<List<Book>> data = new ArrayList<List<Book>>();
+
         DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
             @Override
             public void run(SQLiteDatabase database) {
@@ -82,11 +85,12 @@ public class BookDaoSQLite implements IBookDao {
                         Table.COLUMN_TITLE,
                         Table.COLUM_AUTHOR
                 };
-                Cursor cursor = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
+                result[0] = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
+                data.add(manageCursor(result[0]));
             }
         });
 
-        return manageCursor(cursor);
+        return data.get(0);
     }
 
     private List<Book> manageCursor(Cursor cursor){
