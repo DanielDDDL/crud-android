@@ -74,7 +74,6 @@ public class BookDaoSQLite implements IBookDao {
     public List<Book> selectBooks() {
 
         //I am sorry...
-        final Cursor[] result = new Cursor[1];
         final List<List<Book>> data = new ArrayList<List<Book>>();
 
         DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
@@ -85,8 +84,8 @@ public class BookDaoSQLite implements IBookDao {
                         Table.COLUMN_TITLE,
                         Table.COLUM_AUTHOR
                 };
-                result[0] = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
-                data.add(manageCursor(result[0]));
+                Cursor cursor = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
+                data.add(manageCursor(cursor));
             }
         });
 
