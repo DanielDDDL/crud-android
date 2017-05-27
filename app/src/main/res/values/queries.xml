@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- DROP TABLE QUERY -->
+    <string name="drop_table_books">
+        DROP TABLE IF EXISTS books;
+    </string>
+
+    <!--CREATE TABLE QUERY -->
+    <string name="create_table_books">
+        CREATE TABLE IF NOT EXISTS books (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            author  TEXT
+        );
+    </string>
+
+
+</resources>
