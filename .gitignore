@@ -49,6 +49,7 @@ captures/
 .idea/dictionaries
 .idea/libraries
 .idea
+proguard-rules.pro
 
 # Keystore files
 *.jks
