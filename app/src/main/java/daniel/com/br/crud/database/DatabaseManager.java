@@ -55,4 +55,22 @@ public class DatabaseManager {
         }
     }
 
+    public void executeQuery(IQueryExecutor executor){
+        openDatabase();
+        executor.run(database);
+        closeDatabase();
+    }
+
+    public void executeQueryTask(final IQueryExecutor executor){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                executeQuery(executor);
+//                openDatabase();
+//                executor.run(database);
+//                closeDatabase();
+            }
+        }).start();
+    }
+
 }

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import daniel.com.br.crud.model.BookDao;
-
 /**
  * Created by Dias on 27/05/2017.
  */
@@ -24,12 +22,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creating tables
-        db.execSQL(BookDaoSQLite.getCreateTable(context));
+        db.execSQL(IBookDaoSQLite.getCreateTable(context));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(BookDaoSQLite.getDropTable(context));
+        db.execSQL(IBookDaoSQLite.getDropTable(context));
         onCreate(db);
     }
 }

@@ -7,13 +7,13 @@ import java.util.List;
 
 import daniel.com.br.crud.R;
 import daniel.com.br.crud.model.Book;
-import daniel.com.br.crud.model.BookDao;
+import daniel.com.br.crud.model.IBookDao;
 
 /**
  * Created by Dias on 27/05/2017.
  */
 
-public class BookDaoSQLite implements BookDao{
+public class IBookDaoSQLite implements IBookDao {
 
     interface Table {
         String COLUMN_ID = "id";
@@ -24,7 +24,7 @@ public class BookDaoSQLite implements BookDao{
     private SQLiteDatabase database;
     private Context context;
 
-    public BookDaoSQLite(SQLiteDatabase database, Context context){
+    public IBookDaoSQLite(SQLiteDatabase database, Context context){
         this.database = database;
         this.context = context;
     }
