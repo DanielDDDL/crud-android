@@ -25,11 +25,9 @@ public class BookDaoSQLite implements IBookDao {
         String COLUM_AUTHOR = "author";
     }
 
-    private SQLiteDatabase database;
     private Context context;
 
-    public BookDaoSQLite(SQLiteDatabase database, Context context){
-        this.database = database;
+    public BookDaoSQLite(Context context){
         this.context = context;
 
         //initiating our singleton class
