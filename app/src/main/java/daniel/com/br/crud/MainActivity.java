@@ -23,13 +23,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.testContext = this;
-        listBooks = (ListView)findViewById(R.id.listBooks);
-        testAdapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,FRUITS);
-        listBooks.setAdapter(testAdapter);
+
+
+//        this.testContext = this;
+//        listBooks = (ListView)findViewById(R.id.listBooks);
+//        testAdapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,FRUITS);
+//        listBooks.setAdapter(testAdapter);
 //        //tests porpuses
-//        Intent newActivityIntent = new Intent(this,NewBookActivity.class);
-//        startActivity(newActivityIntent);
+        Intent newActivityIntent = new Intent(this,NewBookActivity.class);
+        startActivity(newActivityIntent);
 
     }
 }

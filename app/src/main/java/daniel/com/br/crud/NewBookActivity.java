@@ -53,7 +53,7 @@ public class NewBookActivity extends AppCompatActivity {
                 new BookDaoSQLite(context).insertBook(book);
 
                 //show message
-                String messageToast = title + " was sucessfully register";
+                String messageToast = title + " was sucessfully registered";
                 Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
 
                 //clean fields
@@ -68,7 +68,7 @@ public class NewBookActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent newActivityMain = new Intent(context,MainActivity.class);
+            Intent newActivityMain = new Intent(NewBookActivity.this,MainActivity.class);
             startActivity(newActivityMain);
         }
     }
