@@ -1,7 +1,9 @@
 package daniel.com.br.crud;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     //list of books objects
     private List<Book> listBooks;
-
 
     private Context context;
 
@@ -88,11 +89,51 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            //make sure the user knows what he is doing
-            //delete it from the database
-            //...
-            return false;
+
+            final Book clickedBook = (Book)parent.getAdapter().getItem(position);
+
+            //ask for the user to confirm that he wants to delete the book
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            alertDialogBuilder.setTitle("Deleting book")
+                    .setMessage("Are you sure you really wanna do this?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //confirming willing to delete book...
+
+                            //deleting form the database and removing it from the list
+                            new BookDaoSQLite(context).delete(clickedBook.getId());
+                            listBooks.remove(getBookPositionOnList(clickedBook.getId()));
+
+                            //refreshing list
+                            adapter.notifyDataSetChanged();
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener(){
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //cacelling opertation
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+            return true; //prevent the "short click" event from firing
         }
+    }
+
+    //return the index of the book from the book list based on its id
+    private int getBookPositionOnList(int idBook){
+        for(int i = 0; i < listBooks.size(); i++){
+            if (listBooks.get(i).getId() == idBook){
+                return i;
+            }
+        }
+
+        return -1;//book not found
     }
 
     private class BtnNewBookListener implements View.OnClickListener{

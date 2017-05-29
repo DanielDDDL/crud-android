@@ -90,13 +90,13 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //confirming willing to delete book
+                            //confirming willing to delete book...
                             new BookDaoSQLite(context).delete(activityBook.getId());
                             //going back to the main activity
                             Intent intent = new Intent(context,MainActivity.class);
                             context.startActivity(intent);
 
-                            //prevent from comming back to this activity if back buttonp pressed
+                            //prevent from comming back to this activity if back button pressed
                             finish();
                         }
                     })
