@@ -1,7 +1,9 @@
 package daniel.com.br.crud;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -81,6 +83,34 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            //ask for the user to confirm that he wants to delete the book
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            alertDialogBuilder.setTitle("Deleting book")
+                    .setMessage("Are you sure you really wanna do this?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //confirming willing to delete book
+                            new BookDaoSQLite(context).delete(activityBook.getId());
+                            //going back to the main activity
+                            Intent intent = new Intent(context,MainActivity.class);
+                            context.startActivity(intent);
+
+                            //prevent from comming back to this activity if back buttonp pressed
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener(){
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //cacelling opertation
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
 
         }
     }
