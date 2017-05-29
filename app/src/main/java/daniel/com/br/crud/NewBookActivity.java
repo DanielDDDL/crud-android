@@ -38,6 +38,7 @@ public class NewBookActivity extends AppCompatActivity {
 
     }
 
+    //buttons on click listeners
     private class BtnRegisterOnClickListener implements View.OnClickListener{
 
         @Override
@@ -59,7 +60,6 @@ public class NewBookActivity extends AppCompatActivity {
                 //clean fields
                 txtTitle.setText("");
                 txtAuthor.setText("");
-
             }
         }
     }
@@ -68,8 +68,8 @@ public class NewBookActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent newActivityMain = new Intent(NewBookActivity.this,MainActivity.class);
-            startActivity(newActivityMain);
+            Intent newActivityMain = new Intent(context,MainActivity.class);
+            context.startActivity(newActivityMain);
         }
     }
 
