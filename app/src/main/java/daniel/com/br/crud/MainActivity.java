@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import daniel.com.br.crud.database.BookDaoSQLite;
@@ -42,25 +43,57 @@ public class MainActivity extends AppCompatActivity {
         listBooks = new BookDaoSQLite(context).selectBooks();
 
         //loading all the books on the list onto the list view
-        adapter = new ArrayAdapter<Book>(context,R.layout.simple_list_item,listBooks);
+        adapter = new ArrayAdapter<>(context,R.layout.simple_list_item,listBooks);
+
         lvBooks = (ListView)findViewById(R.id.lvBooks);
         lvBooks.setAdapter(adapter);
+        //list events listener
+        lvBooks.setOnItemClickListener(new LvBooksItemClickListener());
+        lvBooks.setOnItemLongClickListener(new LvBookItemLongClickListener());
 
         //add new book button
         Button btnNewBook = (Button)findViewById(R.id.btnNewBook);
         btnNewBook.setOnClickListener(new BtnNewBookListener());
 
-//        testes
-//        this.testContext = this;
-//        listBooks = (ListView)findViewById(R.id.listBooks);
-//        testAdapter = new ArrayAdapter<String>(this,R.layout.simple_list_item,FRUITS);
-//        listBooks.setAdapter(testAdapter);
-//        Intent newActivityIntent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
-//        newActivityIntent.putExtra("title","Titulo");
-//        newActivityIntent.putExtra("author","Autor");
-//        newActivityIntent.putExtra("id",10);
-//        startActivity(newActivityIntent);
+    }
 
+    @Override
+    protected void onRestart() {
+        //updating data whem back button is pressed
+        super.onRestart();
+        listBooks = new BookDaoSQLite(context).selectBooks();
+        adapter = new ArrayAdapter<>(context,R.layout.simple_list_item,listBooks);
+        lvBooks.setAdapter(adapter);
+    }
+
+    private class LvBooksItemClickListener implements AdapterView.OnItemClickListener{
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            //getting information from the clicked book
+            Book clickedBook = (Book)parent.getAdapter().getItem(position);
+
+            //passing on that information for the next activity
+            Intent intent = new Intent(context,UpdateOrDeleteActivity.class);
+            intent.putExtra("id",clickedBook.getId());
+            intent.putExtra("title",clickedBook.getTitle());
+            intent.putExtra("author",clickedBook.getAuthor());
+
+            context.startActivity(intent);
+
+        }
+    }
+
+    private class LvBookItemLongClickListener implements AdapterView.OnItemLongClickListener{
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            //make sure the user knows what he is doing
+            //delete it from the database
+            //...
+            return false;
+        }
     }
 
     private class BtnNewBookListener implements View.OnClickListener{
@@ -71,5 +104,7 @@ public class MainActivity extends AppCompatActivity {
             context.startActivity(intent);
         }
     }
+
+
 
 }

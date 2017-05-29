@@ -67,7 +67,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
                 //show message
                 String messageToast = "Book updated sucessfully";
-                Toast.makeText(context,messageToast,Toast.LENGTH_SHORT);
+                Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
 
                 //going back to the previous screen
                 Intent newMainActivity = new Intent(context,MainActivity.class);
