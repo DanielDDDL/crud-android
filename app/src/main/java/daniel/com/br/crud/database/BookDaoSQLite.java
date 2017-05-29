@@ -134,4 +134,13 @@ public class BookDaoSQLite implements IBookDao {
             }
         });
     }
+
+    public void deleteAll (){
+        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+            @Override
+            public void run(SQLiteDatabase database) {
+                database.delete(Table.TABLE_NAME,null,null);
+            }
+        });
+    }
 }

@@ -16,6 +16,11 @@ public class Book {
         this.author = author;
     }
 
+    public Book (String title, String author){
+        this.title = title;
+        this.author = author;
+    }
+
     public Book(){ }
 
     //getters
