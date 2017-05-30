@@ -2,6 +2,7 @@ package daniel.com.br.crud;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -68,8 +69,10 @@ public class NewBookActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent newActivityMain = new Intent(context,MainActivity.class);
+            Intent newActivityMain = NavUtils.getParentActivityIntent(NewBookActivity.this);
             context.startActivity(newActivityMain);
+
+            finish();
         }
     }
 
