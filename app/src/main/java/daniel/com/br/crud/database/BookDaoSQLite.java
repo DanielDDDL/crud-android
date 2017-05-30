@@ -46,7 +46,7 @@ public class BookDaoSQLite implements IBookDao {
     @Override
     public void insertBook(final Book book) {
 
-        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+        DatabaseManager.getInstance().executeQuery(new QueryExecutor() {
             @Override
             public void run(SQLiteDatabase database) {
                 ContentValues values = new ContentValues();
@@ -61,7 +61,7 @@ public class BookDaoSQLite implements IBookDao {
     @Override
     public void delete(final int id) {
 
-        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+        DatabaseManager.getInstance().executeQuery(new QueryExecutor() {
             @Override
             public void run(SQLiteDatabase database) {
                 String whereClause = Table.COLUMN_ID + " = " + id;
@@ -73,23 +73,20 @@ public class BookDaoSQLite implements IBookDao {
     @Override
     public List<Book> selectBooks() {
 
-        //I am sorry...
-        final List<List<Book>> data = new ArrayList<List<Book>>();
-
-        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+        Object result = DatabaseManager.getInstance().executeQueryGet(new QueryExecutorGet() {
             @Override
-            public void run(SQLiteDatabase database) {
+            public Object run(SQLiteDatabase database) {
                 String[] columns = {
                         Table.COLUMN_ID,
                         Table.COLUMN_TITLE,
                         Table.COLUM_AUTHOR
                 };
                 Cursor cursor = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
-                data.add(manageCursor(cursor));
+                return manageCursor(cursor);
             }
         });
 
-        return data.get(0);
+        return (List<Book>)result;
     }
 
     private List<Book> manageCursor(Cursor cursor){
@@ -121,7 +118,7 @@ public class BookDaoSQLite implements IBookDao {
     @Override
     public void update(final Book book, final int id) {
 
-        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+        DatabaseManager.getInstance().executeQuery(new QueryExecutor() {
             @Override
             public void run(SQLiteDatabase database) {
                 //new values
@@ -136,7 +133,7 @@ public class BookDaoSQLite implements IBookDao {
     }
 
     public void deleteAll (){
-        DatabaseManager.getInstance().executeQuery(new IQueryExecutor() {
+        DatabaseManager.getInstance().executeQuery(new QueryExecutor() {
             @Override
             public void run(SQLiteDatabase database) {
                 database.delete(Table.TABLE_NAME,null,null);
