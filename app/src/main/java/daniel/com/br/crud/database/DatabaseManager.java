@@ -3,6 +3,7 @@ package daniel.com.br.crud.database;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -55,22 +56,18 @@ public class DatabaseManager {
         }
     }
 
-    public void executeQuery(IQueryExecutor executor){
+    public void executeQuery(QueryExecutor executor){
         openDatabase();
         executor.run(database);
         closeDatabase();
     }
 
-    public void executeQueryTask(final IQueryExecutor executor){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                executeQuery(executor);
-//                openDatabase();
-//                executor.run(database);
-//                closeDatabase();
-            }
-        }).start();
+    public Object executeQueryGet(QueryExecutorGet executorGet){
+        openDatabase();
+        Object result = executorGet.run(database);
+        closeDatabase();
+
+        return result;
     }
 
 }
