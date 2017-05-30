@@ -69,7 +69,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                 new BookDaoSQLite(context).update(activityBook,activityBook.getId());
 
                 //show message
-                String messageToast = "Book updated sucessfully";
+                String messageToast = "Book updated successfully";
                 Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
 
                 //going back to the previous screen
