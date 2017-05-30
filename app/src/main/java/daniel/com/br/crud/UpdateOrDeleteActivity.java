@@ -3,6 +3,7 @@ package daniel.com.br.crud;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -68,12 +69,14 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                 new BookDaoSQLite(context).update(activityBook,activityBook.getId());
 
                 //show message
-                String messageToast = "Book updated sucessfully";
+                String messageToast = "Book updated successfully";
                 Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
 
                 //going back to the previous screen
-                Intent newMainActivity = new Intent(context,MainActivity.class);
+                Intent newMainActivity = NavUtils.getParentActivityIntent(UpdateOrDeleteActivity.this);
                 context.startActivity(newMainActivity);
+
+                finish();
 
             }
         }
@@ -121,6 +124,8 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent mainActivityIntent = new Intent(UpdateOrDeleteActivity.this,MainActivity.class);
             UpdateOrDeleteActivity.this.startActivity(mainActivityIntent);
+
+            finish();
         }
     }
 
