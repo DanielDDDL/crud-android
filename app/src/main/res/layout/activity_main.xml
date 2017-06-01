@@ -16,6 +16,12 @@
         android:layout_height="match_parent"
         android:weightSum="1">
 
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar" />
+
         <ListView
             android:id="@+id/lvBooks"
             android:layout_width="match_parent"
@@ -26,6 +32,8 @@
             android:text="Register New Book"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/btnNewBook" />
     </LinearLayout>
 
