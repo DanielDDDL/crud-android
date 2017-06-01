@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     //adapter dealing with the books
-    private ArrayAdapter<Book> adapter;
+    private BookAdapter adapter;
 
     //list of books objects
     private List<Book> listBooks;
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
             //puttin the results of the processing into the adapter
             listBooks = books;
-            adapter = new ArrayAdapter<Book>(context,R.layout.simple_list_item,listBooks);
+            adapter = new BookAdapter(context,listBooks);
             lvBooks.setAdapter(adapter);
         }
 
