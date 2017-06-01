@@ -18,7 +18,7 @@ import daniel.com.br.crud.model.Book;
 public class UpdateOrDeleteActivity extends AppCompatActivity {
 
     //widgets
-    private EditText txtTitle, txtAuthor;
+    private EditText txtTitle, txtAuthor, txtGenre;
     private Button btnUpdate, btnDelete, btnBack;
 
     private Context context;
@@ -36,7 +36,8 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         int id = intent.getIntExtra("id",0);
         String title = intent.getStringExtra("title");
         String author = intent.getStringExtra("author");
-        activityBook = new Book(id,title,author);
+        String genre = intent.getStringExtra("genre");
+        activityBook = new Book(id,title,author, genre);
 
         //getting widgets from view
         //adding current information from the book into the textfields
@@ -44,6 +45,8 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         txtTitle.setText(activityBook.getTitle());
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
         txtAuthor.setText(activityBook.getAuthor());
+        txtGenre = (EditText)findViewById(R.id.txtGenre);
+        txtGenre.setText(activityBook.getGenre());
 
         //setting buttons actions
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
@@ -64,6 +67,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                 //get book's new information and adding it to the activity book
                 activityBook.setTitle(txtTitle.getText().toString());
                 activityBook.setAuthor(txtAuthor.getText().toString());
+                activityBook.setGenre(txtGenre.getText().toString());
 
                 //update it on the database
                 new BookDaoSQLite(context).update(activityBook,activityBook.getId());
@@ -142,6 +146,11 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         if (txtAuthor.getText().toString().isEmpty()){
             isValid = false;
             txtAuthor.setError("New author's field must be filled");
+        }
+        //genre
+        if (txtGenre.getText().toString().isEmpty()){
+            isValid = false;
+            txtGenre.setError("New genre's field must be filled");
         }
 
         return isValid;

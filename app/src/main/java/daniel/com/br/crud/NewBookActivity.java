@@ -16,7 +16,7 @@ import daniel.com.br.crud.model.Book;
 public class NewBookActivity extends AppCompatActivity {
 
     //widgets
-    private EditText txtTitle, txtAuthor;
+    private EditText txtTitle, txtAuthor, txtGenre;
     private Button btnRegister, btnBack;
     private Context context;
 
@@ -30,6 +30,7 @@ public class NewBookActivity extends AppCompatActivity {
         //getting widgets from view
         txtTitle = (EditText)findViewById(R.id.txtTitle);
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
+        txtGenre = (EditText)findViewById(R.id.txtGenre);
         btnRegister = (Button)findViewById(R.id.btnRegister);
         btnBack = (Button)findViewById(R.id.btnBack);
 
@@ -49,18 +50,20 @@ public class NewBookActivity extends AppCompatActivity {
                 //get book's information
                 String title = txtTitle.getText().toString();
                 String author = txtAuthor.getText().toString();
-                Book book = new Book(title,author); //setting values
+                String genre = txtGenre.getText().toString();
+                Book book = new Book(title,author,genre); //setting values
 
                 //register book on database
                 new BookDaoSQLite(context).insertBook(book);
 
                 //show message
-                String messageToast = title + " was sucessfully registered";
+                String messageToast = title + " was successfully registered";
                 Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
 
                 //clean fields
                 txtTitle.setText("");
                 txtAuthor.setText("");
+                txtGenre.setText("");
             }
         }
     }
@@ -89,6 +92,11 @@ public class NewBookActivity extends AppCompatActivity {
         if (txtAuthor.getText().toString().isEmpty()){
             isValid = false;
             txtAuthor.setError("Author's field must be filled");
+        }
+        //genre
+        if (txtGenre.getText().toString().isEmpty()){
+            isValid = false;
+            txtGenre.setError("Genre's field must be filled");
         }
 
         return isValid;

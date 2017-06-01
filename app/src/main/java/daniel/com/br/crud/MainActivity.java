@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("id",clickedBook.getId());
             intent.putExtra("title",clickedBook.getTitle());
             intent.putExtra("author",clickedBook.getAuthor());
+            intent.putExtra("genre",clickedBook.getGenre());
 
             context.startActivity(intent);
 
