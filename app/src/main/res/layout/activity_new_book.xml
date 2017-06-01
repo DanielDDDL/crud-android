@@ -31,6 +31,14 @@
             android:id="@+id/txtAuthor"
             android:hint="Author" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/txtGenre"
+            android:hint="Genre" />
+
         <Button
             android:text="Register Book"
             android:layout_width="match_parent"

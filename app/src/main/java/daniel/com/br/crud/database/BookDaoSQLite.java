@@ -22,7 +22,8 @@ public class BookDaoSQLite implements IBookDao {
         String TABLE_NAME = "books";
         String COLUMN_ID = "id";
         String COLUMN_TITLE = "title";
-        String COLUM_AUTHOR = "author";
+        String COLUMN_AUTHOR = "author";
+        String COLUMN_GENRE = "genre";
     }
 
     private Context context;
@@ -51,7 +52,8 @@ public class BookDaoSQLite implements IBookDao {
             public void run(SQLiteDatabase database) {
                 ContentValues values = new ContentValues();
                 values.put(Table.COLUMN_TITLE,book.getTitle());
-                values.put(Table.COLUM_AUTHOR,book.getAuthor());
+                values.put(Table.COLUMN_AUTHOR,book.getAuthor());
+                values.put(Table.COLUMN_GENRE,book.getGenre());
 
                 database.insert(Table.TABLE_NAME,null,values);
             }
@@ -79,7 +81,8 @@ public class BookDaoSQLite implements IBookDao {
                 String[] columns = {
                         Table.COLUMN_ID,
                         Table.COLUMN_TITLE,
-                        Table.COLUM_AUTHOR
+                        Table.COLUMN_AUTHOR,
+                        Table.COLUMN_GENRE
                 };
                 Cursor cursor = database.query(Table.TABLE_NAME,columns,null,null,null,null,null,null);
                 return manageCursor(cursor);
@@ -105,12 +108,14 @@ public class BookDaoSQLite implements IBookDao {
     private Book cursorToData(Cursor cursor){
         int idIndex = cursor.getColumnIndex(Table.COLUMN_ID);
         int titleIndex = cursor.getColumnIndex(Table.COLUMN_TITLE);
-        int authorIndex = cursor.getColumnIndex(Table.COLUM_AUTHOR);
+        int authorIndex = cursor.getColumnIndex(Table.COLUMN_AUTHOR);
+        int genreIndex = cursor.getColumnIndex(Table.COLUMN_GENRE);
 
         Book book = new Book();
         book.setId(cursor.getInt(idIndex));
         book.setTitle(cursor.getString(titleIndex));
         book.setAuthor(cursor.getString(authorIndex));
+        book.setGenre(cursor.getString(genreIndex));
 
         return book;
     }
@@ -124,7 +129,8 @@ public class BookDaoSQLite implements IBookDao {
                 //new values
                 ContentValues values = new ContentValues();
                 values.put(Table.COLUMN_TITLE,book.getTitle());
-                values.put(Table.COLUM_AUTHOR,book.getAuthor());
+                values.put(Table.COLUMN_AUTHOR,book.getAuthor());
+                values.put(Table.COLUMN_GENRE,book.getGenre());
 
                 String whereClause = Table.COLUMN_ID + " = " + id;
                 database.update(Table.TABLE_NAME,values,whereClause,null);
