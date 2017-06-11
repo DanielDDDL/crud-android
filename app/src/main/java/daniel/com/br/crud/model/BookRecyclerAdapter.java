@@ -73,8 +73,10 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
 
             switch (item.getItemId()){
                 case R.id.action_edit:
+                    //TODO add here the edit action
                     return true;
                 case R.id.action_delete:
+                    //TODO add here the delete action
                     return true;
                 default:
             }
@@ -96,8 +98,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
         //widgets held by the adapter
         public TextView txtTitle, txtAuthor;
         public ImageView ivOverflow; //clickable menu
-
-        //TODO: get the images for the menu
 
         public MyViewHolder(View itemView) {
             super(itemView);
