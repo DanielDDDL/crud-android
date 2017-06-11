@@ -103,6 +103,7 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
             super(itemView);
             txtTitle = (TextView) itemView.findViewById(R.id.txt_title);
             txtAuthor = (TextView) itemView.findViewById(R.id.txt_author);
+            ivOverflow = (ImageView) itemView.findViewById(R.id.overflow);
         }
     }
 

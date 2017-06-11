@@ -7,6 +7,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +19,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,27 +31,47 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private BookRecyclerAdapter bookAdapter;
     private List<Book> bookList;
+    private Button btnNewBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //setting the list and the adapter the uses it
+        bookList = new ArrayList<>();
+        bookAdapter = new BookRecyclerAdapter(this,bookList);
+
+        //recycler view and its layout manager and adapter set
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(bookAdapter);
+
+        //loading books from the database
+        new LoadBooks().execute();
+
+        //new book button
+        btnNewBook = (Button)findViewById(R.id.btn_add);
+        btnNewBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,NewBookActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
     }
 
-    /*
+
     @Override
     protected void onRestart() {
         //updating data when back button is pressed
         super.onRestart();
-
-        //showing the progress bar while loading
-        progressBar.setVisibility(View.VISIBLE);
-
         new LoadBooks().execute();
 
     }
-    */
 
     /*
     private class LvBooksItemClickListener implements AdapterView.OnItemClickListener{
@@ -119,6 +143,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     */
+
+    class LoadBooks extends AsyncTask<Void,Void,List<Book>>{
+
+        @Override
+        protected List<Book> doInBackground(Void... params) {
+            return new BookDaoSQLite(MainActivity.this).selectBooks();
+        }
+
+        @Override
+        protected void onPostExecute(List<Book> books) {
+            super.onPostExecute(books);
+            //setting the books gotten from the database
+            //notifying the change to reload
+            bookList.clear();
+            bookList.addAll(books);
+            bookAdapter.notifyDataSetChanged();
+        }
+    }
 
     /*
     //1 - Void: parameter used to execute the task in the  backgroud
