@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private BookRecyclerAdapter bookAdapter;
     private List<Book> bookList;
-    private Button btnNewBook;
+    private FloatingActionButton btnNewBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         new LoadBooks().execute();
 
         //new book button
-        btnNewBook = (Button)findViewById(R.id.btn_add);
+        btnNewBook = (FloatingActionButton) findViewById(R.id.btn_add);
         btnNewBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
