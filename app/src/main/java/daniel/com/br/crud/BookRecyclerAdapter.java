@@ -1,4 +1,4 @@
-package daniel.com.br.crud.model;
+package daniel.com.br.crud;
 
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import daniel.com.br.crud.R;
+import daniel.com.br.crud.model.Book;
 
 /**
  * Created by Dias on 11/06/2017.

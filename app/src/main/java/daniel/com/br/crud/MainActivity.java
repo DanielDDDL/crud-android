@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,41 +24,18 @@ import daniel.com.br.crud.model.Book;
 
 public class MainActivity extends AppCompatActivity {
 
-    //widgets
-    private ListView lvBooks;
-    private Button btnNewBook;
-    private ProgressBar progressBar;
-
-    //adapter dealing with the books
-    private BookAdapter adapter;
-
-    //list of books objects
-    private List<Book> listBooks;
-
-    private Context context;
+    private RecyclerView recyclerView;
+    private BookRecyclerAdapter bookAdapter;
+    private List<Book> bookList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.context = this;
-
-        lvBooks = (ListView)findViewById(R.id.lvBooks);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
-
-        new LoadBooks().execute();
-
-        //list events listener
-        lvBooks.setOnItemClickListener(new LvBooksItemClickListener());
-        lvBooks.setOnItemLongClickListener(new LvBookItemLongClickListener());
-
-        //add new book button
-        Button btnNewBook = (Button)findViewById(R.id.btnNewBook);
-        btnNewBook.setOnClickListener(new BtnNewBookListener());
-
     }
 
+    /*
     @Override
     protected void onRestart() {
         //updating data when back button is pressed
@@ -69,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
         new LoadBooks().execute();
 
     }
+    */
 
+    /*
     private class LvBooksItemClickListener implements AdapterView.OnItemClickListener{
 
         @Override
@@ -130,17 +110,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //return the index of the book from the book list based on its id
-    private int getBookPositionOnList(int idBook){
-        for(int i = 0; i < listBooks.size(); i++){
-            if (listBooks.get(i).getId() == idBook){
-                return i;
-            }
-        }
-
-        return -1;//book not found
-    }
-
     private class BtnNewBookListener implements View.OnClickListener{
 
         @Override
@@ -149,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
             context.startActivity(intent);
         }
     }
+    */
 
+    /*
     //1 - Void: parameter used to execute the task in the  backgroud
     //2 - Integer: parameter passed to the "onProgressUpdate" method, which will be used to show our progress
     //3 - Result of the "doInBackground" method, which will be used to show the results on "onPostExecute"
@@ -206,5 +177,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    */
 
 }
