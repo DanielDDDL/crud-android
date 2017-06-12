@@ -29,17 +29,11 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
 
     private Context mContext;
     private List<Book> bookList;
-    private RecyclerView recyclerView;
 
     public BookRecyclerAdapter(Context mContext, List<Book> bookList){
         this.mContext = mContext;
         this.bookList = bookList;
 
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
     }
 
     @Override
@@ -54,6 +48,7 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 
         final Book clickedBook = bookList.get(position);
+        final Integer index = position;
         holder.txtTitle.setText(clickedBook.getTitle());
         holder.txtAuthor.setText(clickedBook.getAuthor());
 
@@ -61,13 +56,13 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
         holder.ivOverflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopupMenu(holder.ivOverflow, clickedBook);
+                showPopupMenu(holder.ivOverflow, clickedBook, index);
             }
         });
 
     }
 
-    private void showPopupMenu (View view, final Book clickedBook){
+    private void showPopupMenu (View view, final Book clickedBook, final Integer index){
         //inflating menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
@@ -95,7 +90,7 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //confirming willing to delete book...
-                                    new DeleteBookLoader().execute(clickedBook.getId());
+                                    new DeleteBookLoader().execute(clickedBook.getId(),index);
                                     //TODO: reload data
                                 }
                             })
@@ -150,19 +145,22 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
             Integer id = params[0];
             new BookDaoSQLite(mContext).delete(id);
 
-            return findBookByIdOnBookList(id);
+            return params[1];
         }
 
         @Override
         protected void onPostExecute(Integer index) {
-            super.onPostExecute(index);
-            if (index != -1){
+//            super.onPostExecute(index);
+            Log.e("starting of the method",String.valueOf(index));
+            if (index >= 0 && index < bookList.size()){
                 //delete from the list as well
                 //and notifying changes
+                Log.e("inside if condition",String.valueOf(index));
+                Log.e("size before removing",String.valueOf(bookList.size()));
                 bookList.remove(index);
-                notifyDataSetChanged();
-//                recyclerView.setAdapter(new BookRecyclerAdapter(mContext,bookList));
-//                recyclerView.invalidate();
+                Log.e("size after removing",String.valueOf(bookList.size()));
+                notifyItemRemoved(index);
+//                notifyItemRangeChanged(0,bookList.size());
 //                recyclerView.removeViewAt(index);
 //                notifyItemRemoved(index);
 //                notifyItemRangeChanged(index,bookList.size());
@@ -170,17 +168,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
             }
 
         }
-    }
-
-    private int findBookByIdOnBookList(int id){
-        for (int i = 0; i < bookList.size(); i++){
-            if (bookList.get(0).getId() == id){
-                return i;
-            }
-        }
-        //not found
-        return -1;
-
     }
 
 }
