@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import daniel.com.br.crud.database.BookDaoSQLite;
@@ -91,7 +92,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
                                 public void onClick(DialogInterface dialog, int which) {
                                     //confirming willing to delete book...
                                     new DeleteBookLoader().execute(clickedBook.getId(),index);
-                                    //TODO: reload data
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener(){
@@ -155,19 +155,25 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
             if (index >= 0 && index < bookList.size()){
                 //delete from the list as well
                 //and notifying changes
-                Log.e("inside if condition",String.valueOf(index));
-                Log.e("size before removing",String.valueOf(bookList.size()));
-                bookList.remove(index);
-                Log.e("size after removing",String.valueOf(bookList.size()));
+                bookList = removeItemAt(bookList,index);
                 notifyItemRemoved(index);
-//                notifyItemRangeChanged(0,bookList.size());
-//                recyclerView.removeViewAt(index);
-//                notifyItemRemoved(index);
-//                notifyItemRangeChanged(index,bookList.size());
+                notifyItemRangeChanged(index,bookList.size());
 
             }
 
         }
     }
+
+    public List<Book> removeItemAt(List<Book> initialList, int index){
+        List<Book> newList = new ArrayList<>();
+        for (int i = 0; i < initialList.size(); i++){
+            if (i != index){
+                newList.add(initialList.get(i));
+            }
+        }
+
+        return newList;
+    }
+
 
 }
