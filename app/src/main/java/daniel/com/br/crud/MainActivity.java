@@ -32,9 +32,56 @@ public class MainActivity extends AppCompatActivity {
 
         //setting the list and the adapter the uses it
         bookList = new ArrayList<>();
-        //TODO: set actions after constructor; check if it works
+
+        //setting the adapter
+        //and the actions of its buttons after object was constructed
+        bookAdapter = new BookRecyclerAdapter(this,bookList);
+        bookAdapter.setEditEvent(new IEvent() {
+            @Override
+            public void run(View view, int position) {
+                //clicked book
+                Book selectedBook = bookList.get(position);
+
+                //information passed to the next activity
+                Intent intent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
+                intent.putExtra("id",selectedBook.getId());
+                intent.putExtra("title",selectedBook.getTitle());
+                intent.putExtra("author",selectedBook.getAuthor());
+                intent.putExtra("genre",selectedBook.getGenre());
+                MainActivity.this.startActivity(intent);
+            }
+        });
+        bookAdapter.setDeleteEvent(new IEvent() {
+            @Override
+            public void run(View view, final int position) {
+                //ask for the user to confirm that he wants to delete the book
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder.setTitle("Deleting book")
+                        .setMessage("Are you sure you really wanna do this?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //confirming willing to delete book...
+                                new LoadDeleteBook().execute(position);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //cancelling operation
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        });
+        /*
+        //IN THE CONSTRUCTOR OF THE CLASS
+        //PASSING ACTIONS OF THE EDIT AND THE DELETE BUTTONS
         bookAdapter = new BookRecyclerAdapter(this, bookList, new IEvent() {
-            /*edit event*/
+            edit
             @Override
             public void run(View view, int position) {
                 //clicked book
@@ -49,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(intent);
             }
         }, new IEvent() {
-            /*delete event*/
+            //delete
             @Override
             public void run(View view, final int position) {
 
@@ -76,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+        */
 
         //recycler view and its layout manager and adapter set
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
