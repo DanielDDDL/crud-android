@@ -53,12 +53,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnDelete" />
-
-        <Button
-            android:text="Go Back"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnBack" />
     </LinearLayout>
 
 </RelativeLayout>
