@@ -19,7 +19,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
     //widgets
     private EditText txtTitle, txtAuthor, txtGenre;
-    private Button btnUpdate, btnDelete, btnBack;
+    private Button btnUpdate, btnDelete;
 
     private Context context;
     private Book activityBook;
@@ -53,8 +53,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         btnUpdate.setOnClickListener(new BtnUpdateOnClickListener());
         btnDelete = (Button)findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new BtnDeleteOnClickListener());
-        btnBack = (Button)findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new BtnBackOnClickListener());
     }
 
     private class BtnUpdateOnClickListener implements View.OnClickListener{
@@ -119,17 +117,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
 
-        }
-    }
-
-    private class BtnBackOnClickListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View v) {
-            Intent mainActivityIntent = new Intent(UpdateOrDeleteActivity.this,MainActivity.class);
-            UpdateOrDeleteActivity.this.startActivity(mainActivityIntent);
-
-            finish();
         }
     }
 

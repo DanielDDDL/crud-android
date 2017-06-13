@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             public void run(View view, int position) {
                 //clicked book
                 Book selectedBook = bookList.get(position);
-
                 //information passed to the next activity
                 Intent intent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
                 intent.putExtra("id",selectedBook.getId());
@@ -99,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             //delete
             @Override
             public void run(View view, final int position) {
-
                 //ask for the user to confirm that he wants to delete the book
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertDialogBuilder.setTitle("Deleting book")
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.cancel();
                             }
                         });
-
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             }

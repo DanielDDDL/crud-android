@@ -17,7 +17,7 @@ public class NewBookActivity extends AppCompatActivity {
 
     //widgets
     private EditText txtTitle, txtAuthor, txtGenre;
-    private Button btnRegister, btnBack;
+    private Button btnRegister;
     private Context context;
 
     @Override
@@ -32,11 +32,9 @@ public class NewBookActivity extends AppCompatActivity {
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
         txtGenre = (EditText)findViewById(R.id.txtGenre);
         btnRegister = (Button)findViewById(R.id.btnRegister);
-        btnBack = (Button)findViewById(R.id.btnBack);
 
         //buttons click events
         btnRegister.setOnClickListener(new BtnRegisterOnClickListener());
-        btnBack.setOnClickListener(new BtnBackOnClickListener());
 
     }
 
@@ -65,17 +63,6 @@ public class NewBookActivity extends AppCompatActivity {
                 txtAuthor.setText("");
                 txtGenre.setText("");
             }
-        }
-    }
-
-    private class BtnBackOnClickListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View v) {
-            Intent newActivityMain = NavUtils.getParentActivityIntent(NewBookActivity.this);
-            context.startActivity(newActivityMain);
-
-            finish();
         }
     }
 

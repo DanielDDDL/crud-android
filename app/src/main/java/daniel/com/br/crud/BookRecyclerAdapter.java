@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import daniel.com.br.crud.model.Book;
@@ -118,7 +117,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     public void setEditEvent(IEvent editEvent) {
         this.editEvent = editEvent;
     }
-
 
     public void setDeleteEvent(IEvent deleteEvent) {
         this.deleteEvent = deleteEvent;
