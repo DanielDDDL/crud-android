@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         //setting the list and the adapter the uses it
         bookList = new ArrayList<>();
+        //TODO: set actions after constructor; check if it works
         bookAdapter = new BookRecyclerAdapter(this, bookList, new IEvent() {
             /*edit event*/
             @Override
@@ -124,26 +125,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class LoadDeleteBook extends AsyncTask<Integer,Void,Void>{
+    class LoadDeleteBook extends AsyncTask<Integer,Void,Integer>{
 
         @Override
-        protected Void doInBackground(Integer... params) {
-            //position passaed as argument
+        protected Integer doInBackground(Integer... params) {
+            //position passed as argument
             int index = params[0];
 
             //deleting from the database
             //and from the current list
             new BookDaoSQLite(MainActivity.this).delete(bookList.get(index).getId());
-            bookList.remove(index); //see if works
+            bookList.remove(index);
 
-            return null;
+            return index;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Integer index) {
+            super.onPostExecute(index);
             //updating adapter about the changes on the list
-            bookAdapter.notifyDataSetChanged();
+            //just the removed row
+            bookAdapter.notifyItemRemoved(index);
+            bookAdapter.notifyItemRangeChanged(index,bookList.size());
+
         }
     }
 
