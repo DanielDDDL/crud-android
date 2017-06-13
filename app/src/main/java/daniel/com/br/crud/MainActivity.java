@@ -1,15 +1,16 @@
 package daniel.com.br.crud;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +36,43 @@ public class MainActivity extends AppCompatActivity {
             /*edit event*/
             @Override
             public void run(View view, int position) {
-                String text = "Edit event on position number " + position;
-                Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT).show();
+                //clicked book
+                Book selectedBook = bookList.get(position);
+
+                //information passed to the next activity
+                Intent intent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
+                intent.putExtra("id",selectedBook.getId());
+                intent.putExtra("title",selectedBook.getTitle());
+                intent.putExtra("author",selectedBook.getAuthor());
+                intent.putExtra("genre",selectedBook.getGenre());
+                MainActivity.this.startActivity(intent);
             }
         }, new IEvent() {
             /*delete event*/
             @Override
-            public void run(View view, int position) {
-                String text = "Delete event on position number " + position;
-                Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT).show();
+            public void run(View view, final int position) {
+
+                //ask for the user to confirm that he wants to delete the book
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder.setTitle("Deleting book")
+                        .setMessage("Are you sure you really wanna do this?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //confirming willing to delete book...
+                                new LoadDeleteBook().execute(position);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //cancelling operation
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
 
@@ -69,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onRestart() {
         //updating data when back button is pressed
@@ -92,6 +120,29 @@ public class MainActivity extends AppCompatActivity {
             //notifying the change to reload
             bookList.clear();
             bookList.addAll(books);
+            bookAdapter.notifyDataSetChanged();
+        }
+    }
+
+    class LoadDeleteBook extends AsyncTask<Integer,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            //position passaed as argument
+            int index = params[0];
+
+            //deleting from the database
+            //and from the current list
+            new BookDaoSQLite(MainActivity.this).delete(bookList.get(index).getId());
+            bookList.remove(index); //see if works
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //updating adapter about the changes on the list
             bookAdapter.notifyDataSetChanged();
         }
     }
