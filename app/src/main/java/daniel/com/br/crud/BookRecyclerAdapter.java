@@ -26,6 +26,10 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     private IEvent editEvent;
     private IEvent deleteEvent;
 
+    //defines whether of not the list is empty
+    private static final int VIEW_TYPE_EMPTY =  0;
+    private static final int VIEW_TYPE_NOT_EMPTY = 1;
+
     //constructors
     public BookRecyclerAdapter(Context mContext, List<Book> bookList){
         this.mContext = mContext;
@@ -60,27 +64,56 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View viewItem = layoutInflater.inflate(R.layout.book_card,parent,false);
+    public int getItemViewType(int position) {
+        if (bookList.size() == 0){
+            return VIEW_TYPE_EMPTY;
+        } else {
+            return VIEW_TYPE_NOT_EMPTY;
+        }
+    }
 
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View viewItem = null;
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
+        //checking if the list is empty
+        //inflating accordingly
+        if (viewType == VIEW_TYPE_EMPTY){
+            viewItem = layoutInflater.inflate(R.layout.empty_list_item,parent,false);
+        } else {
+            viewItem = layoutInflater.inflate(R.layout.book_card, parent, false);
+        }
+
+        //creating item out of the view creating from inflating
         return new MyViewHolder(viewItem);
+
+//        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+//        View viewItem = layoutInflater.inflate(R.layout.book_card,parent,false);
+//
+//        return new MyViewHolder(viewItem);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        Book book = bookList.get(position);
-        holder.txtTitle.setText(book.getTitle());
-        holder.txtAuthor.setText(book.getAuthor());
+        //adding information to item(s) if the list if not empty
+        int viewType = getItemViewType(position);
+        if (viewType == VIEW_TYPE_NOT_EMPTY){
+            Book book = bookList.get(position);
+            holder.txtTitle.setText(book.getTitle());
+            holder.txtAuthor.setText(book.getAuthor());
 
-        //menu click listener
-        holder.ivOverflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(holder.ivOverflow, position);
-            }
-        });
+            //menu click listener
+            holder.ivOverflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPopupMenu(holder.ivOverflow, position);
+                }
+            });
+        }
+
 
     }
 
@@ -110,7 +143,12 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return bookList.size();
+        //there will be an item if the list is empty
+        if (bookList.size() == 0)
+            return 1;
+        else
+            return bookList.size();
+
     }
 
     //setters for the buttons action
