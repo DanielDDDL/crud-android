@@ -24,23 +24,11 @@ import android.arch.persistence.room.PrimaryKey;
 tableName = "tbTagsBooks")
 public class TagsInBooks {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private int bookId;
     private int tagId;
-
-    //constructors
-    public TagsInBooks(int id, int bookId, int tagId) {
-        this.id = id;
-        this.bookId = bookId;
-        this.tagId = tagId;
-    }
-
-    public TagsInBooks(int bookId, int tagId) {
-        this.bookId = bookId;
-        this.tagId = tagId;
-    }
 
     //getters and setters
     public int getId() {

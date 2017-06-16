@@ -10,23 +10,11 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "tbBooks")
 public class Book {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String title;
     private String author;
-
-    //constructors
-    public Book(int id, String title, String author, String genre){
-        this.id = id;
-        this.title = title;
-        this.author = author;
-    }
-
-    public Book (String title, String author, String genre){
-        this.title = title;
-        this.author = author;
-    }
 
     public Book(){ }
 

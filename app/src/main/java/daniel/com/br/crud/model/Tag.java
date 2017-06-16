@@ -10,20 +10,10 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "tbTags")
 public class Tag {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String text;
-
-    //constructors
-    public Tag (int id, String text){
-        this.id = id;
-        this.text = text;
-    }
-
-    public Tag (String text){
-        this.text = text;
-    }
 
     //getters and setters
     public int getId() {
