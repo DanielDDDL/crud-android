@@ -20,8 +20,12 @@ public class DatabaseCreator {
     //for Singleton instantiation
     private static final Object LOCK = new Object();
 
+    //thread safety purposes
     private final AtomicBoolean mInitializing = new AtomicBoolean(true);
 
+    /**
+     * Singleton instance getter
+     * */
     public synchronized static DatabaseCreator getsInstance(Context context){
         if (sInstance == null){
             synchronized (LOCK){
@@ -34,11 +38,23 @@ public class DatabaseCreator {
         return sInstance;
     }
 
-    @Nullable
+    /**
+     * get usable instance of database
+     * if not created, exception thrown
+     * */
     public AppDatabase getDatabase(){
+        if (mDatabase == null){
+            String errorMessage = "Initialize the database first by calling 'createDatabase' function";
+            throw new IllegalStateException(errorMessage);
+        }
+
         return mDatabase;
     }
 
+    /**
+     * create the instance of database
+     * making sure is thread safe
+     * */
     public void createDatabase(Context context){
 
         if (!mInitializing.compareAndSet(true,false)){

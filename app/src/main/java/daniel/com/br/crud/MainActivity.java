@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,50 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-        /*
-        //IN THE CONSTRUCTOR OF THE CLASS
-        //PASSING ACTIONS OF THE EDIT AND THE DELETE BUTTONS
-        bookAdapter = new BookRecyclerAdapter(this, bookList, new IEvent() {
-            edit
-            @Override
-            public void run(View view, int position) {
-                //clicked book
-                Book selectedBook = bookList.get(position);
-                //information passed to the next activity
-                Intent intent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
-                intent.putExtra("id",selectedBook.getId());
-                intent.putExtra("title",selectedBook.getTitle());
-                intent.putExtra("author",selectedBook.getAuthor());
-                intent.putExtra("genre",selectedBook.getGenre());
-                MainActivity.this.startActivity(intent);
-            }
-        }, new IEvent() {
-            //delete
-            @Override
-            public void run(View view, final int position) {
-                //ask for the user to confirm that he wants to delete the book
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertDialogBuilder.setTitle("Deleting book")
-                        .setMessage("Are you sure you really wanna do this?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //confirming willing to delete book...
-                                new LoadDeleteBook().execute(position);
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //cancelling operation
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-        */
 
         //recycler view and its layout manager and adapter set
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -152,10 +110,20 @@ public class MainActivity extends AppCompatActivity {
 
     class LoadBooks extends AsyncTask<Void,Void,List<Book>>{
 
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
         @Override
         protected List<Book> doInBackground(Void... params) {
-            //TODO: here goes the query that gets all books from the database
-            return null;
+            List<Book> listBook = databaseCreator.getDatabase().bookModel().findAllBooks();
+            Log.e("Size",String.valueOf(listBook.size()));
+            return listBook;
         }
 
         @Override
@@ -171,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
 
     class LoadDeleteBook extends AsyncTask<Integer,Void,Integer>{
 
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
         @Override
         protected Integer doInBackground(Integer... params) {
             //position passed as argument
@@ -178,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
             //deleting from the database
             //and from the current list
-            //TODO: here goes the query that delete the book passed as parameter
+            databaseCreator.getDatabase().bookModel().deleteBook(bookList.get(index));
             bookList.remove(index);
 
             return index;

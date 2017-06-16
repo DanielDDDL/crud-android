@@ -12,7 +12,7 @@ import daniel.com.br.crud.model.TagsInBooks;
  * Created by Dias on 16/06/2017.
  */
 
-@Database(entities = {Book.class, Tag.class, TagsInBooks.class}, version = 1)
+@Database(entities = {Book.class, Tag.class, TagsInBooks.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase{
 
     public static final String DATABASE_NAME = "dbBooks";

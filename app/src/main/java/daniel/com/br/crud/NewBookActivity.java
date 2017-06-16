@@ -1,6 +1,7 @@
 package daniel.com.br.crud;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
 
 public class NewBookActivity extends AppCompatActivity {
@@ -46,25 +48,54 @@ public class NewBookActivity extends AppCompatActivity {
                 String title = txtTitle.getText().toString();
                 String author = txtAuthor.getText().toString();
                 String genre = txtGenre.getText().toString();
-                Book book = new Book(title,author,genre); //setting values
 
-                //register book on database
-                //TODO: here goes the query that inserts the book into the database
+                //creating book out of information gotten from the text fields
+                Book book = new Book();
+                book.setTitle(title);
+                book.setAuthor(author);
 
-                //show message
-                String messageToast = title + " was successfully registered";
-                Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
-
-                //clean fields
-                txtTitle.setText("");
-                txtAuthor.setText("");
-                txtGenre.setText("");
+                //inserting book into the database
+                new InsertBookLoader().execute(book);
             }
         }
     }
 
-    //return true if all the fields text are valid
-    //also it sets an error message on the txts invalid, so that the user knows
+    class InsertBookLoader extends AsyncTask<Book,Void,Void>{
+
+        DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
+        @Override
+        protected Void doInBackground(Book... params) {
+            databaseCreator.getDatabase().bookModel().insertBook(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            //show message
+            String messageToast = "Book was successfully registered";
+            Toast.makeText(context,messageToast,Toast.LENGTH_SHORT).show();
+
+            //clean fields
+            txtTitle.setText("");
+            txtAuthor.setText("");
+            txtGenre.setText("");
+        }
+    }
+
+    /**
+     * return true if all the fields text are valid
+     * also it sets an error message on the txts invalid, so that the user knows
+     */
     private boolean areFieldsValid(){
         boolean isValid = true;
         //title

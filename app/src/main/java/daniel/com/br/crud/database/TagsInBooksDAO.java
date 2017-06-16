@@ -38,7 +38,4 @@ public interface TagsInBooksDAO {
     @Query("DELETE FROM tbTagsBooks WHERE tagId = :tagId")
     void deleteAllTagsForTagsWithId(int tagId);
 
-    @Delete
-    void deleteAllTagsInBooks();
-
 }
