@@ -1,12 +1,18 @@
 package daniel.com.br.crud.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 /**
  * Created by Dias on 16/06/2017.
  */
 
+@Entity
 public class Tag {
 
+    @PrimaryKey
     private int id;
+
     private String text;
 
     //constructors
