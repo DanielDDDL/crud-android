@@ -19,7 +19,7 @@ import daniel.com.br.crud.model.Book;
 public class UpdateOrDeleteActivity extends AppCompatActivity {
 
     //widgets
-    private EditText txtTitle, txtAuthor, txtGenre;
+    private EditText txtTitle, txtAuthor;
     private Button btnUpdate, btnDelete;
 
     private Context context;
@@ -49,7 +49,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         txtTitle.setText(activityBook.getTitle());
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
         txtAuthor.setText(activityBook.getAuthor());
-        txtGenre = (EditText)findViewById(R.id.txtGenre);
 
         //setting buttons actions
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
@@ -191,11 +190,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         if (txtAuthor.getText().toString().isEmpty()){
             isValid = false;
             txtAuthor.setError("New author's field must be filled");
-        }
-        //genre
-        if (txtGenre.getText().toString().isEmpty()){
-            isValid = false;
-            txtGenre.setError("New genre's field must be filled");
         }
 
         return isValid;
