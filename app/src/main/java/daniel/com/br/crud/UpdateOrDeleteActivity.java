@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import daniel.com.br.crud.database.BookDaoSQLite;
 import daniel.com.br.crud.model.Book;
 
 public class UpdateOrDeleteActivity extends AppCompatActivity {
@@ -46,7 +45,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
         txtAuthor.setText(activityBook.getAuthor());
         txtGenre = (EditText)findViewById(R.id.txtGenre);
-        txtGenre.setText(activityBook.getGenre());
 
         //setting buttons actions
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
@@ -65,10 +63,9 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                 //get book's new information and adding it to the activity book
                 activityBook.setTitle(txtTitle.getText().toString());
                 activityBook.setAuthor(txtAuthor.getText().toString());
-                activityBook.setGenre(txtGenre.getText().toString());
 
                 //update it on the database
-                new BookDaoSQLite(context).update(activityBook,activityBook.getId());
+                //TODO: here goes the book that updates a book from the database
 
                 //show message
                 String messageToast = "Book updated successfully";
@@ -96,7 +93,8 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //confirming willing to delete book...
-                            new BookDaoSQLite(context).delete(activityBook.getId());
+                            //TODO: here goes the query that deletes a book from the database
+
                             //going back to the main activity
                             Intent intent = new Intent(context,MainActivity.class);
                             context.startActivity(intent);

@@ -1,8 +1,6 @@
 package daniel.com.br.crud;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import daniel.com.br.crud.database.BookDaoSQLite;
 import daniel.com.br.crud.model.Book;
 
 public class NewBookActivity extends AppCompatActivity {
@@ -52,7 +49,7 @@ public class NewBookActivity extends AppCompatActivity {
                 Book book = new Book(title,author,genre); //setting values
 
                 //register book on database
-                new BookDaoSQLite(context).insertBook(book);
+                //TODO: here goes the query that inserts the book into the database
 
                 //show message
                 String messageToast = title + " was successfully registered";

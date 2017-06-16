@@ -15,7 +15,6 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import daniel.com.br.crud.database.BookDaoSQLite;
 import daniel.com.br.crud.model.Book;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("id",selectedBook.getId());
                 intent.putExtra("title",selectedBook.getTitle());
                 intent.putExtra("author",selectedBook.getAuthor());
-                intent.putExtra("genre",selectedBook.getGenre());
                 MainActivity.this.startActivity(intent);
             }
         });
@@ -156,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected List<Book> doInBackground(Void... params) {
-            return new BookDaoSQLite(MainActivity.this).selectBooks();
+            //TODO: here goes the query that gets all books from the database
+            return null;
         }
 
         @Override
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
             //deleting from the database
             //and from the current list
-            new BookDaoSQLite(MainActivity.this).delete(bookList.get(index).getId());
+            //TODO: here goes the query that delete the book passed as parameter
             bookList.remove(index);
 
             return index;
