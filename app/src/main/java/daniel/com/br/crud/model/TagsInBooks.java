@@ -20,7 +20,8 @@ import android.arch.persistence.room.PrimaryKey;
         @ForeignKey(entity = Tag.class,
                     parentColumns = "id",
                     childColumns = "tagId")
-})
+},
+tableName = "tbTagsBooks")
 public class TagsInBooks {
 
     @PrimaryKey

@@ -7,7 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by Dias on 16/06/2017.
  */
 
-@Entity
+@Entity(tableName = "tbTags")
 public class Tag {
 
     @PrimaryKey
