@@ -38,6 +38,6 @@ public interface BookDAO {
     void deleteBook(Book book);
 
     @Query("DELETE FROM tbBooks")
-    void deleteAll();
+    void deleteAllBooks();
 
 }
