@@ -3,8 +3,6 @@
 buildscript {
     repositories {
         jcenter()
-        mavenLocal()
-        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
@@ -17,9 +15,20 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    buildToolsVersion = "25.0.2"
+    supportLibVersion = "25.3.1"
+    runnerVersion = "0.5"
+    rulesVersion = "0.5"
+    espressoVersion = "2.2.2"
+    archLifecycleVersion = "1.0.0-alpha1"
+    archRoomVersion = "1.0.0-alpha1"
 }
