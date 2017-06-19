@@ -121,26 +121,6 @@ public class BookFragment extends Fragment {
         }
     }
 
-    class AddDummyBook extends AsyncTask<Void,Void,Void>{
-
-        private DatabaseCreator databaseCreator;
-
-        public AddDummyBook(){
-            databaseCreator = DatabaseCreator.getsInstance(mContext);
-            databaseCreator.createDatabase(mContext);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Book book = new Book();
-            book.setTitle("Dummy Title");
-            book.setAuthor("Dummy Author");
-            databaseCreator.getDatabase().bookModel().insertBook(book);
-
-            return null;
-        }
-    }
-
     class LoadListBook extends AsyncTask<Void,Void,List<Book>>{
 
         private DatabaseCreator databaseCreator;
