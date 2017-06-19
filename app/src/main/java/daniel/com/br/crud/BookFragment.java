@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,6 +32,8 @@ public class BookFragment extends Fragment {
     private BookRecyclerAdapter mBookAdapter;
 
     private Context mContext;
+
+    private FloatingActionButton mFloatingActionButton;
 
     public BookFragment() {
         isLoaded = false;
@@ -100,6 +103,16 @@ public class BookFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mBookAdapter);
+
+        //fab and its action
+        mFloatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab_add_new_book);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,NewBookActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
