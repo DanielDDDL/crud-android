@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +102,24 @@ public class BookFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mBookAdapter);
+
+        //showing and hiding fab according to scrolling
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                    mFloatingActionButton.show();
+                }
+                super.onScrollStateChanged(recyclerView,newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && mFloatingActionButton.isShown()){
+                    mFloatingActionButton.hide();
+                }
+            }
+        });
 
         //fab and its action
         mFloatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab_add_new_book);
