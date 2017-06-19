@@ -100,10 +100,6 @@ public class BookFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mBookAdapter);
-
-        if(getUserVisibleHint()){
-            setUserVisibleHint(true);
-        }
     }
 
     @Override
@@ -119,6 +115,7 @@ public class BookFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        //reloading data when back button pressed
         if(getUserVisibleHint()){
             new LoadListBook().execute();
         }
