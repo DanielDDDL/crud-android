@@ -178,4 +178,38 @@ public class TagFragment extends Fragment {
             isLoaded = true;
         }
     }
+
+    class LoadDeleteTag extends AsyncTask<Integer,Void,Integer>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(mContext);
+            databaseCreator.createDatabase(mContext);
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            //position passed as argument
+            int index = params[0];
+
+            //deleting corresponding tag from the database
+            //and from the current list
+            databaseCreator.getDatabase().tagModel().deleteTag(mTagList.get(index));
+            mTagList.remove(index);
+
+            return index;
+        }
+
+        @Override
+        protected void onPostExecute(Integer index) {
+            super.onPostExecute(index);
+            //updating adapter on the changes occurred
+            mTagAdapter.notifyItemRemoved(index);
+            mTagAdapter.notifyItemRangeChanged(index,mTagList.size());
+
+        }
+    }
 }
