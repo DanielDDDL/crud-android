@@ -1,175 +1,77 @@
 package daniel.com.br.crud;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import daniel.com.br.crud.database.DatabaseCreator;
-import daniel.com.br.crud.model.Book;
-
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private BookRecyclerAdapter bookAdapter;
-    private List<Book> bookList;
-    private FloatingActionButton btnNewBook;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //setting the list and the adapter the uses it
-        bookList = new ArrayList<>();
+        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //setting the adapter
-        //and the actions of its buttons after object was constructed
-        bookAdapter = new BookRecyclerAdapter(this,bookList);
-        bookAdapter.setEditEvent(new IEvent() {
-            @Override
-            public void run(View view, int position) {
-                //clicked book
-                Book selectedBook = bookList.get(position);
+        //setting up the adapter that is going to control the fragments
+        //adding the book fragment to it
+        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
+        pageAdapter.addFragment(new BookFragment(),"Books");
+        pageAdapter.addFragment(new TagFragment(),"Tags");
+        mViewPager = (ViewPager)findViewById(R.id.container);
+        mViewPager.setAdapter(pageAdapter);
 
-                //information passed to the next activity
-                Intent intent = new Intent(MainActivity.this,UpdateOrDeleteActivity.class);
-                intent.putExtra("id",selectedBook.getId());
-                intent.putExtra("title",selectedBook.getTitle());
-                intent.putExtra("author",selectedBook.getAuthor());
-                MainActivity.this.startActivity(intent);
-            }
-        });
-        bookAdapter.setDeleteEvent(new IEvent() {
-            @Override
-            public void run(View view, final int position) {
-                //ask for the user to confirm that he wants to delete the book
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertDialogBuilder.setTitle("Deleting book")
-                        .setMessage("Are you sure you really wanna do this?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //confirming willing to delete book...
-                                new LoadDeleteBook().execute(position);
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //cancelling operation
-                                dialog.cancel();
-                            }
-                        });
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-
-        //recycler view and its layout manager and adapter set
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(bookAdapter);
-
-        //loading books from the database
-        new LoadBooks().execute();
-
-        //new book button
-        btnNewBook = (FloatingActionButton) findViewById(R.id.btn_add);
-        btnNewBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,NewBookActivity.class);
-                MainActivity.this.startActivity(intent);
-            }
-        });
+        mTabLayout = (TabLayout)findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
 
     }
 
-    @Override
-    protected void onRestart() {
-        //updating data when back button is pressed
-        super.onRestart();
-        new LoadBooks().execute();
+    class PageAdapter extends FragmentStatePagerAdapter{
 
-    }
+        private final List<Fragment> mFragmentsList;
+        private final List<String> mFragmentsTitle;
 
-    class LoadBooks extends AsyncTask<Void,Void,List<Book>>{
+        public PageAdapter(FragmentManager fragmentManager){
+            super(fragmentManager);
+            mFragmentsList = new ArrayList<>();
+            mFragmentsTitle = new ArrayList<>();
+        }
 
-        private DatabaseCreator databaseCreator;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
-            databaseCreator.createDatabase(getApplicationContext());
+        public void addFragment(Fragment fragment, String title){
+            mFragmentsList.add(fragment);
+            mFragmentsTitle.add(title);
         }
 
         @Override
-        protected List<Book> doInBackground(Void... params) {
-            List<Book> listBook = databaseCreator.getDatabase().bookModel().findAllBooks();
-            Log.e("Size",String.valueOf(listBook.size()));
-            return listBook;
+        public Fragment getItem(int position) {
+            return mFragmentsList.get(position);
         }
 
         @Override
-        protected void onPostExecute(List<Book> books) {
-            super.onPostExecute(books);
-            //setting the books gotten from the database
-            //notifying the change to reload
-            bookList.clear();
-            bookList.addAll(books);
-            bookAdapter.notifyDataSetChanged();
-        }
-    }
-
-    class LoadDeleteBook extends AsyncTask<Integer,Void,Integer>{
-
-        private DatabaseCreator databaseCreator;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
-            databaseCreator.createDatabase(getApplicationContext());
+        public CharSequence getPageTitle(int position) {
+            return mFragmentsTitle.get(position);
         }
 
         @Override
-        protected Integer doInBackground(Integer... params) {
-            //position passed as argument
-            int index = params[0];
-
-            //deleting from the database
-            //and from the current list
-            databaseCreator.getDatabase().bookModel().deleteBook(bookList.get(index));
-            bookList.remove(index);
-
-            return index;
+        public int getCount() {
+            return mFragmentsList.size();
         }
 
-        @Override
-        protected void onPostExecute(Integer index) {
-            super.onPostExecute(index);
-            //updating adapter about the changes on the list
-            //just the removed row
-            bookAdapter.notifyItemRemoved(index);
-            bookAdapter.notifyItemRangeChanged(index,bookList.size());
 
-        }
     }
 
 }
