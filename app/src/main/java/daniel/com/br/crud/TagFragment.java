@@ -11,9 +11,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,7 @@ public class TagFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //confirming willing to delete tag...
-//                                new LoadDeleteBook().execute(position);
+                                new LoadDeleteTag().execute(position);
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener(){
@@ -123,9 +125,42 @@ public class TagFragment extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add here insert tag dialog
-//                Intent intent = new Intent(mContext,NewBookActivity.class);
-//                mContext.startActivity(intent);
+
+
+                //EdiText that is going to be featured on the dialog
+                final EditText txtTagName = new EditText(mContext);
+                txtTagName.setInputType(InputType.TYPE_CLASS_TEXT); //data that can be inserted
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setView(txtTagName); //adding EditText
+
+                //setting up dialog and its components
+                builder.setTitle("Insert new Tag:")
+                        .setPositiveButton("Insert", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //if not empty...
+                                String nameInserted = txtTagName.getText().toString();
+                                if (!nameInserted.isEmpty()){
+                                    //inserting into the database
+                                    new LoadInsertTag().execute(nameInserted);
+                                } else {
+                                    //informing error
+                                    txtTagName.setError("This field must be filled");
+                                    dialog.dismiss(); //avoid closing the dialog
+
+                                }
+                            }})
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //cancelling dialog
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
 
@@ -210,6 +245,42 @@ public class TagFragment extends Fragment {
             mTagAdapter.notifyItemRemoved(index);
             mTagAdapter.notifyItemRangeChanged(index,mTagList.size());
 
+        }
+    }
+
+    class LoadInsertTag extends AsyncTask<String,Void,Integer>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(mContext);
+            databaseCreator.createDatabase(mContext);
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            //creating tag that is going to be inserted
+            Tag newTag = new Tag();
+            newTag.setText(params[0]);
+
+            //inserting tag passed as parameter into the database
+            //and into the list as well
+            databaseCreator.getDatabase().tagModel().insertTag(newTag);
+            mTagList.add(newTag);
+
+            //to notify changes
+            return mTagList.size();
+        }
+
+        @Override
+        protected void onPostExecute(Integer index) {
+            super.onPostExecute(index);
+            //notifying adapter on changes
+            mTagAdapter.notifyItemInserted(index);
+            //TODO: do we need anything else in here?
         }
     }
 }
