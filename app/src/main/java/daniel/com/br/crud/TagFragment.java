@@ -2,7 +2,7 @@ package daniel.com.br.crud;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Tag;
 
 public class TagFragment extends Fragment {
@@ -133,10 +134,48 @@ public class TagFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+
+        //loading data only if visible to user
+        if (isVisibleToUser && !isLoaded && isAdded()){
+            new LoadListTag().execute();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //reloading data when back button pressed
+        if(getUserVisibleHint()){
+            new LoadListTag().execute();
+        }
+    }
+
+    class LoadListTag extends AsyncTask<Void,Void,List<Tag>>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(mContext);
+            databaseCreator.createDatabase(mContext);
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Void... params) {
+            List<Tag> tagList = databaseCreator.getDatabase().tagModel().findAllTags();
+            return tagList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Tag> tags) {
+            //setting the tags gotten from the database
+            //notifying the change to reload
+            mTagList.clear();
+            mTagList.addAll(tags);
+            mTagAdapter.notifyDataSetChanged();
+
+            isLoaded = true;
+        }
     }
 }
