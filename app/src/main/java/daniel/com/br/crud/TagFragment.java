@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,17 +57,46 @@ public class TagFragment extends Fragment {
         mTagAdapter = new TagRecyclerAdapter(mContext,mTagList);
         mTagAdapter.setEditEvent(new IEvent() {
             @Override
-            public void run(View view, int position) {
+            public void run(View view, final int position) {
                 //clicked tag
-                Tag selectedTag = mTagList.get(position);
+                final Tag selectedTag = mTagList.get(position);
 
-                //TODO: show here editing dialog
-//                //information passed to the next activity
-//                Intent intent = new Intent(mContext,UpdateOrDeleteActivity.class);
-//                intent.putExtra("id",selectedBook.getId());
-//                intent.putExtra("title",selectedBook.getTitle());
-//                intent.putExtra("author",selectedBook.getAuthor());
-//                mContext.startActivity(intent);
+                //EdiText that is going to be featured on the dialog
+                final EditText txtTagName = new EditText(mContext);
+                txtTagName.setInputType(InputType.TYPE_CLASS_TEXT); //data that can be inserted
+                txtTagName.setText(selectedTag.getText());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setView(txtTagName); //adding EditText
+
+                //setting up dialog and its components
+                builder.setTitle("Update Tag:")
+                        .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //if not empty...
+                                String nameInserted = txtTagName.getText().toString();
+                                if (!nameInserted.isEmpty()){
+                                    //executing update
+                                    selectedTag.setText(nameInserted);
+                                    new LoadEditTag(position).execute(selectedTag);
+                                } else {
+                                    //informing error
+                                    String errorMessage = "You must fill the specified field";
+                                    Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
+                                }
+                            }})
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //cancelling dialog
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
             }
         });
         mTagAdapter.setDeleteEvent(new IEvent() {
@@ -126,7 +156,6 @@ public class TagFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
                 //EdiText that is going to be featured on the dialog
                 final EditText txtTagName = new EditText(mContext);
                 txtTagName.setInputType(InputType.TYPE_CLASS_TEXT); //data that can be inserted
@@ -146,8 +175,8 @@ public class TagFragment extends Fragment {
                                     new LoadInsertTag().execute(nameInserted);
                                 } else {
                                     //informing error
-                                    txtTagName.setError("This field must be filled");
-                                    dialog.dismiss(); //avoid closing the dialog
+                                    String errorMessage = "You must fill the specified field";
+                                    Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
 
                                 }
                             }})
@@ -280,7 +309,42 @@ public class TagFragment extends Fragment {
             super.onPostExecute(index);
             //notifying adapter on changes
             mTagAdapter.notifyItemInserted(index);
-            //TODO: do we need anything else in here?
+        }
+    }
+
+    class LoadEditTag extends AsyncTask<Tag,Void,Void>{
+
+        private DatabaseCreator databaseCreator;
+        private int mTagIndex; //index on the list of the tag being edited
+
+        public LoadEditTag(int tagIndex){
+            mTagIndex = tagIndex;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(mContext);
+            databaseCreator.createDatabase(mContext);
+        }
+
+        @Override
+        protected Void doInBackground(Tag... params) {
+
+            //editing tag passed as parameter
+            //and on the list as well
+            databaseCreator.getDatabase().tagModel().updateTag(params[0]);
+            mTagList.remove(mTagIndex);
+            mTagList.add(mTagIndex,params[0]);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void theVoid) {
+            super.onPostExecute(theVoid);
+            //notifying adapter on changes
+            mTagAdapter.notifyItemChanged(mTagIndex);
         }
     }
 }

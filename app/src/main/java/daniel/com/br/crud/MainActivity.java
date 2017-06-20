@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         //adding the book fragment to it
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
         pageAdapter.addFragment(new BookFragment(),"Books");
-        pageAdapter.addFragment(new BookFragment(),"Books");
+        pageAdapter.addFragment(new TagFragment(),"Tags");
         mViewPager = (ViewPager)findViewById(R.id.container);
         mViewPager.setAdapter(pageAdapter);
 
