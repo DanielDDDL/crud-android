@@ -52,13 +52,13 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         //widgets held by the adapter
-        public TextView txtTitle, txtAuthor;
+        public TextView lblTitle, lblAuthor;
         public ImageView ivOverflow; //clickable menu
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            txtTitle = (TextView) itemView.findViewById(R.id.txt_title);
-            txtAuthor = (TextView) itemView.findViewById(R.id.txt_author);
+            lblTitle = (TextView) itemView.findViewById(R.id.txt_title);
+            lblAuthor = (TextView) itemView.findViewById(R.id.txt_author);
             ivOverflow = (ImageView) itemView.findViewById(R.id.overflow);
         }
     }
@@ -88,11 +88,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
 
         //creating item out of the view creating from inflating
         return new MyViewHolder(viewItem);
-
-//        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-//        View viewItem = layoutInflater.inflate(R.layout.book_card,parent,false);
-//
-//        return new MyViewHolder(viewItem);
     }
 
     @Override
@@ -102,8 +97,8 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
         int viewType = getItemViewType(position);
         if (viewType == VIEW_TYPE_NOT_EMPTY){
             Book book = bookList.get(position);
-            holder.txtTitle.setText(book.getTitle());
-            holder.txtAuthor.setText(book.getAuthor());
+            holder.lblTitle.setText(book.getTitle());
+            holder.lblAuthor.setText(book.getAuthor());
 
             //menu click listener
             holder.ivOverflow.setOnClickListener(new View.OnClickListener() {
@@ -146,8 +141,8 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
         //there will be an item if the list is empty
         if (bookList.size() == 0)
             return 1;
-        else
-            return bookList.size();
+
+        return bookList.size();
 
     }
 
