@@ -4,7 +4,7 @@ package daniel.com.br.crud.model;
  * Created by Dias on 30/06/2017.
  */
 
-public class TagWithTitle {
+public class TagInBooksWithTitle {
 
     private int id;
     private String text;

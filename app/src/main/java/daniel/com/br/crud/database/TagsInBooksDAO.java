@@ -1,12 +1,12 @@
 package daniel.com.br.crud.database;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import daniel.com.br.crud.model.TagInBooksWithTitle;
 import daniel.com.br.crud.model.TagsInBooks;
 
 /**
@@ -25,6 +25,11 @@ public interface TagsInBooksDAO {
             "FROM tbTagsBooks " +
             "WHERE tagId = :tagId")
     List<TagsInBooks> findAllBooksForTagsWithId(int tagId);
+
+    @Query("SELECT tbTagsBooks.id, tbTags.text" +
+           "INNER JOIN tbTags ON tbTags.id = tbTagsBooks.tagId" +
+           "WHERE tbTagsBooks.bookId = :bookId")
+    List<TagInBooksWithTitle> findTagsWithNameForBookWithId(int bookId);
 
     @Insert
     void insertTagInBook(TagsInBooks tagsInBooks);
