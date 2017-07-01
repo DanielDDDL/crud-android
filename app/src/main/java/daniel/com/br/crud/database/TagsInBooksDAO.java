@@ -6,6 +6,7 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import daniel.com.br.crud.model.Tag;
 import daniel.com.br.crud.model.TagInBooksWithTitle;
 import daniel.com.br.crud.model.TagsInBooks;
 
@@ -31,6 +32,12 @@ public interface TagsInBooksDAO {
            "INNER JOIN tbTags ON tbTags.id = tbTagsBooks.tagId " +
            "WHERE tbTagsBooks.bookId = :bookId")
     List<TagInBooksWithTitle> findTagsWithNameForBookWithId(int bookId);
+
+//    @Query("SELECT tbTagsBook.tagId, tbTags.text " +
+//           "FROM tbTagsBooks " +
+//           "INNER JOIN tbTags ON tbTags.id = tbTagsBooks.tagId " +
+//           "WHERE tbTagsBooks.bookId = :bookId")
+//    List<Tag> findTagsForBookWithId(int bookId);
 
     @Insert
     void insertTagInBook(TagsInBooks tagsInBooks);

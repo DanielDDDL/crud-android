@@ -30,7 +30,7 @@ public class SelectTagsDialog extends DialogFragment {
 
         //TODO: I know this is not the way to do these things
         //TODO: I will study more about saving things to Bundle
-        //TODO: But for now, just to get this thing over, let's to it like this, ok?
+        //TODO: But for now, just to get this thing over, let's do it like this, ok?
         SelectTagsDialog frag = new SelectTagsDialog();
         frag.mOnPositeveAnswer = onPositiveAnswer;
         frag.mRegisteredTags = registeredTags;
@@ -47,7 +47,7 @@ public class SelectTagsDialog extends DialogFragment {
             return createSelectionDialog(tagsTitle);
 
         } catch (NoTagsException e) {
-            Log.e(SelectTagsDialog.class.getSimpleName(),e.getMessage());
+            Log.e(SelectTagsDialog.class.getSimpleName(),"Nenhuma tag cadastrada");
             return createNoTagDialog();
 
         }

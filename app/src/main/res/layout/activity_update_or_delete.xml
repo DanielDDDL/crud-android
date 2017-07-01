@@ -34,6 +34,19 @@
             android:id="@+id/txtAuthor"
             android:hint="Author" />
 
+        <TextView
+            android:id="@+id/lblTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="Loading..."/>
+
+        <Button
+        android:text="Select Tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSelectTags" />
+
         <Button
             android:text="Update"
             android:layout_width="match_parent"
