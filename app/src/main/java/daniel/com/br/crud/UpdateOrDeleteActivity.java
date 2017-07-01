@@ -8,6 +8,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
 import daniel.com.br.crud.model.Tag;
 import daniel.com.br.crud.model.TagInBooksWithTitle;
+import daniel.com.br.crud.model.TagsInBooks;
 
 public class UpdateOrDeleteActivity extends AppCompatActivity {
 
@@ -140,7 +142,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                     activityTags.addAll(selectedTags);
 
                     //updating lblTags
-                    lblTags.setText(StringUtils.tagListToContinuousString(activityTags));
+                    lblTags.setText(StringUtils.tagListToContinuousString(selectedTags));
                 }
             });
         }
@@ -159,7 +161,24 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Book... params) {
+            //updating book
             databaseCreator.getDatabase().bookModel().updateBook(params[0]);
+
+            //updating tags related to that book
+
+
+            //deleting previous tags
+            databaseCreator.getDatabase().tagsInBooksModel().deleteAllTagsForBookWithId(activityBook.getId());
+
+            //getting the relation objects
+            for (int i = 0; i < activityTags.size(); i++){
+                TagsInBooks newTagInBook = new TagsInBooks();
+                newTagInBook.setBookId(activityBook.getId());
+                newTagInBook.setTagId(activityTags.get(i).getId());
+                //inserting into the database
+                databaseCreator.getDatabase().tagsInBooksModel().insertTagInBook(newTagInBook);
+            }
+
             return null;
         }
 
@@ -231,6 +250,14 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
             int bookId = params[0];
             List<TagInBooksWithTitle> tagsForBook = databaseCreator.getDatabase().tagsInBooksModel().findTagsWithNameForBookWithId(bookId);
 
+            Log.e("Size first list", String.valueOf(tagsForBook.size()));
+
+            Log.e(UpdateBookLoader.class.getSimpleName(),
+                    String.valueOf(
+                            databaseCreator.getDatabase().tagsInBooksModel().findAllTagsForBookWithId(bookId).size()
+                    )
+                );
+
             //return tags gotten from the database
             return convertTagsWithtitleToTags(tagsForBook);
         }
@@ -287,6 +314,8 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
             Tag tag = new Tag();
             tag.setId(listTagsWithTitles.get(i).getTagId());
             tag.setText(listTagsWithTitles.get(i).getText());
+
+            listTags.add(tag);
         }
 
         return listTags;
