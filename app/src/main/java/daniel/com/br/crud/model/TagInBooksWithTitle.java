@@ -7,23 +7,23 @@ package daniel.com.br.crud.model;
 public class TagInBooksWithTitle {
 
     private int id;
-    private int idTag;
+    private int tagId;
     private String text;
 
     public int getId() {
         return id;
     }
 
-    public int getIdTag() {
-        return idTag;
-    }
-
-    public void setIdTag(int idTag) {
-        this.idTag = idTag;
-    }
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(int tagId) {
+        this.tagId = tagId;
     }
 
     public String getText() {

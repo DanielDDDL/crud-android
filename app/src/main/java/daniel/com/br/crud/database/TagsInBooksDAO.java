@@ -26,7 +26,7 @@ public interface TagsInBooksDAO {
             "WHERE tagId = :tagId")
     List<TagsInBooks> findAllBooksForTagsWithId(int tagId);
 
-    @Query("SELECT tbTagsBooks.id, tbTags.text " +
+    @Query("SELECT tbTagsBooks.id, tbTagsBooks.tagId, tbTags.text " +
            "FROM tbTagsBooks " +
            "INNER JOIN tbTags ON tbTags.id = tbTagsBooks.tagId " +
            "WHERE tbTagsBooks.bookId = :bookId")
