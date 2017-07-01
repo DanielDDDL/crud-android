@@ -7,5 +7,5 @@ import android.view.View;
  */
 
 public interface IEvent {
-    public void run(View view, int position);
+    void run(View view, int position);
 }
