@@ -31,7 +31,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
     private Context context;
     private Book activityBook;
-    private List<Tag> activityTags;
+    private List<Tag> activityTags, allTagsRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         btnSelectTags = (Button)findViewById(R.id.btnSelectTags);
         btnSelectTags.setOnClickListener(new BtnSelectTagsOnClickListener());
 
+        new LoadAllTagsTask().execute();
         new LoadTagsForCurrentBookTask().execute(activityBook.getId());
     }
 
@@ -122,7 +123,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
     }
 
     private void showSelectionDialog(ISelectTagsDialogEvent onPositiveAnswer){
-        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,activityTags);
+        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,allTagsRegistered);
         dialog.show(getSupportFragmentManager(),"select_book_dialog");
     }
 
@@ -248,6 +249,35 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
             //set a text on lblTags equivalent to the tags from the database
             lblTags.setText(StringUtils.tagListToContinuousString(activityTags));
+        }
+    }
+
+    class LoadAllTagsTask extends AsyncTask<Void,Void,List<Tag>>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Void... params) {
+            return databaseCreator.getDatabase().tagModel().findAllTags();
+        }
+
+        @Override
+        protected void onPostExecute(List<Tag> tags) {
+            super.onPostExecute(tags);
+            if(allTagsRegistered == null)
+                allTagsRegistered = new ArrayList<>();
+            else
+                allTagsRegistered.clear();
+
+            allTagsRegistered.addAll(tags);
+
         }
     }
 

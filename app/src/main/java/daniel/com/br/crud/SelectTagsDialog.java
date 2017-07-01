@@ -47,7 +47,7 @@ public class SelectTagsDialog extends DialogFragment {
             return createSelectionDialog(tagsTitle);
 
         } catch (NoTagsException e) {
-            Log.e(SelectTagsDialog.class.getSimpleName(),"Nenhuma tag cadastrada");
+            Log.e(SelectTagsDialog.class.getSimpleName(),"No tag registered");
             return createNoTagDialog();
 
         }
