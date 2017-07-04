@@ -276,7 +276,8 @@ public class TagFragment extends Fragment {
         protected void onPostExecute(Integer index) {
             super.onPostExecute(index);
             //updating adapter on the changes occurred
-            mTagAdapter.notifyDataSetChanged();
+            mTagAdapter.notifyItemRemoved(index);
+            mTagAdapter.notifyItemRangeChanged(index,mTagList.size());
 
         }
     }
@@ -322,7 +323,11 @@ public class TagFragment extends Fragment {
             if(index != -1)
                 //notifying adapter on changes
                 mTagAdapter.notifyItemInserted(index);
-            
+            else{
+                String text = "Tag already registered";
+                Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
@@ -368,17 +373,15 @@ public class TagFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean successful) {
             super.onPostExecute(successful);
-
-            String text;
-            if(successful) {
-                //informing changes and notifying adapter about it
-                text = "Tag successfully updated";
+            if(successful)
+                //informing changes to adapter
                 mTagAdapter.notifyItemChanged(mTagIndex);
-            }else{
-                text = "Old text equals to current one. No changes were made";
+            else{
+                String text = "New text is equal to old text. No changes were made.";
+                Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
+
         }
     }
 }
