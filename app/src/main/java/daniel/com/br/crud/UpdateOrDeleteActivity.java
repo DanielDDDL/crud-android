@@ -250,14 +250,6 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
             int bookId = params[0];
             List<TagInBooksWithTitle> tagsForBook = databaseCreator.getDatabase().tagsInBooksModel().findTagsWithNameForBookWithId(bookId);
 
-            Log.e("Size first list", String.valueOf(tagsForBook.size()));
-
-            Log.e(UpdateBookLoader.class.getSimpleName(),
-                    String.valueOf(
-                            databaseCreator.getDatabase().tagsInBooksModel().findAllTagsForBookWithId(bookId).size()
-                    )
-                );
-
             //return tags gotten from the database
             return convertTagsWithtitleToTags(tagsForBook);
         }

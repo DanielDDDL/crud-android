@@ -22,6 +22,11 @@ public interface TagDAO {
             "WHERE id = :id")
     Tag findTagById(int id);
 
+    @Query("SELECT * " +
+           "FROM tbTags " +
+           "WHERE text LIKE :text")
+    Tag findTagBytext(String text);
+
     @Query("SELECT * FROM tbTags")
     List<Tag> findAllTags();
 
@@ -34,7 +39,16 @@ public interface TagDAO {
     @Delete
     void deleteTag(Tag tag);
 
+    @Query("DELETE FROM tbTags " +
+           "WHERE text LIKE :text")
+    void deleteTagWithText(String text);
+
     @Query("DELETE FROM tbTags")
     void deleteAllTags();
+
+    @Query("SELECT COUNT (id) " +
+           "FROM tbTags " +
+           "WHERE text LIKE :text")
+    int numberTagswithText(String text);
 
 }

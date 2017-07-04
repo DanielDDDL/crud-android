@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,8 +80,9 @@ public class TagFragment extends Fragment {
                                 String nameInserted = txtTagName.getText().toString();
                                 if (!nameInserted.isEmpty()){
                                     //executing update
-                                    selectedTag.setText(nameInserted);
-                                    new LoadEditTag(position).execute(selectedTag);
+                                    String oldText = selectedTag.getText();
+                                    String newText = txtTagName.getText().toString();
+                                    new LoadEditTag(position).execute(oldText,newText);
                                 } else {
                                     //informing error
                                     String errorMessage = "You must fill the specified field";
@@ -256,23 +258,25 @@ public class TagFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            //position passed as argument
-            int index = params[0];
+
+            //id passed as argument
+            int position = params[0];
+            Tag deletedTag = databaseCreator.getDatabase().tagModel().findTagBytext(mTagList.get(position).getText());
 
             //deleting corresponding tag from the database
             //and from the current list
-            databaseCreator.getDatabase().tagModel().deleteTag(mTagList.get(index));
-            mTagList.remove(index);
+            databaseCreator.getDatabase().tagsInBooksModel().deleteAllTagsForTagsWithId(deletedTag.getId());
+            databaseCreator.getDatabase().tagModel().deleteTag(deletedTag);
+            mTagList.remove(position);
 
-            return index;
+            return position;
         }
 
         @Override
         protected void onPostExecute(Integer index) {
             super.onPostExecute(index);
             //updating adapter on the changes occurred
-            mTagAdapter.notifyItemRemoved(index);
-            mTagAdapter.notifyItemRangeChanged(index,mTagList.size());
+            mTagAdapter.notifyDataSetChanged();
 
         }
     }
@@ -295,24 +299,34 @@ public class TagFragment extends Fragment {
             Tag newTag = new Tag();
             newTag.setText(params[0]);
 
-            //inserting tag passed as parameter into the database
-            //and into the list as well
-            databaseCreator.getDatabase().tagModel().insertTag(newTag);
-            mTagList.add(newTag);
+            int tagsRegisterWithText = databaseCreator.getDatabase().tagModel().numberTagswithText(newTag.getText());
+            if(tagsRegisterWithText == 0){
+                //inserting tag passed as parameter into the database
+                //and into the list as well
+                databaseCreator.getDatabase().tagModel().insertTag(newTag);
+                mTagList.add(newTag);
 
-            //to notify changes
-            return mTagList.size();
+                //to notify changes
+                return mTagList.size();
+
+            } else {
+                return -1;
+            }
+
         }
 
         @Override
         protected void onPostExecute(Integer index) {
             super.onPostExecute(index);
-            //notifying adapter on changes
-            mTagAdapter.notifyItemInserted(index);
+
+            if(index != -1)
+                //notifying adapter on changes
+                mTagAdapter.notifyItemInserted(index);
+            
         }
     }
 
-    class LoadEditTag extends AsyncTask<Tag,Void,Void>{
+    class LoadEditTag extends AsyncTask<String,Void,Boolean>{
 
         private DatabaseCreator databaseCreator;
         private int mTagIndex; //index on the list of the tag being edited
@@ -329,22 +343,42 @@ public class TagFragment extends Fragment {
         }
 
         @Override
-        protected Void doInBackground(Tag... params) {
+        protected Boolean doInBackground(String... params) {
+
+            String oldText = params[0];
+            String newText = params[1];
+
+            if(oldText.equals(newText))
+                return false;
+
+            //getting the id from the database
+            //setting up the object so that holds the tag's id and text
+            Tag tag = databaseCreator.getDatabase().tagModel().findTagBytext(oldText);
+            tag.setText(newText);
 
             //editing tag passed as parameter
             //and on the list as well
-            databaseCreator.getDatabase().tagModel().updateTag(params[0]);
+            databaseCreator.getDatabase().tagModel().updateTag(tag);
             mTagList.remove(mTagIndex);
-            mTagList.add(mTagIndex,params[0]);
+            mTagList.add(mTagIndex,tag);
 
-            return null;
+            return true;
         }
 
         @Override
-        protected void onPostExecute(Void theVoid) {
-            super.onPostExecute(theVoid);
-            //notifying adapter on changes
-            mTagAdapter.notifyItemChanged(mTagIndex);
+        protected void onPostExecute(Boolean successful) {
+            super.onPostExecute(successful);
+
+            String text;
+            if(successful) {
+                //informing changes and notifying adapter about it
+                text = "Tag successfully updated";
+                mTagAdapter.notifyItemChanged(mTagIndex);
+            }else{
+                text = "Old text equals to current one. No changes were made";
+            }
+
+            Toast.makeText(getActivity(),text,Toast.LENGTH_SHORT).show();
         }
     }
 }
