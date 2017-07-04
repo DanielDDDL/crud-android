@@ -22,6 +22,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:theme="@style/Widget.Design.FloatingActionButton" />
+        android:theme="@style/Widget.Design.FloatingActionButton"
+        app:elevation="7dp"
+        android:tint="@color/cardview_light_background"
+        app:backgroundTint="@color/colorAccent" />
 
 </android.support.design.widget.CoordinatorLayout>
