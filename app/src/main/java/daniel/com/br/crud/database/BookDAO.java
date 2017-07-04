@@ -37,6 +37,10 @@ public interface BookDAO {
     @Delete
     void deleteBook(Book book);
 
+    @Query("DELETE FROM tbBooks " +
+           "WHERE id = :id")
+    void deleteBookWithId(int id);
+
     @Query("DELETE FROM tbBooks")
     void deleteAllBooks();
 
