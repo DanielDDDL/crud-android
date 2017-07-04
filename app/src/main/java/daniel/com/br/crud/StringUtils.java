@@ -37,7 +37,7 @@ public class StringUtils {
     public static String tagListToContinuousString(List<Tag> tagList){
 
         if(tagList.size() == 0)
-            return "There is no tag registered for this book";
+            return "Select tags";
 
         String continuousString = "";
         for (int i = 0; i < tagList.size(); i++){

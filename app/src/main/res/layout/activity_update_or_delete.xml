@@ -39,13 +39,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:text="Loading..."/>
-
-        <Button
-        android:text="Select Tags"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSelectTags" />
+            android:clickable="true"
+            android:text="Loading..."
+            android:background="?android:attr/selectableItemBackground"/>
 
         <Button
             android:text="Update"

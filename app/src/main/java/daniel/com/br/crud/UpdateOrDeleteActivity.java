@@ -8,7 +8,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +28,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
     //widgets
     private EditText txtTitle, txtAuthor;
     private TextView lblTags;
-    private Button btnUpdate, btnDelete, btnSelectTags;
+    private Button btnUpdate, btnDelete;
 
     private Context context;
     private Book activityBook;
@@ -61,14 +60,13 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         txtAuthor.setText(activityBook.getAuthor());
 
         lblTags = (TextView)findViewById(R.id.lblTags);
+        lblTags.setOnClickListener(new BtnSelectTagsOnClickListener());
 
         //setting buttons actions
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(new BtnUpdateOnClickListener());
         btnDelete = (Button)findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new BtnDeleteOnClickListener());
-        btnSelectTags = (Button)findViewById(R.id.btnSelectTags);
-        btnSelectTags.setOnClickListener(new BtnSelectTagsOnClickListener());
 
         new LoadAllTagsTask().execute();
         new LoadTagsForCurrentBookTask().execute(activityBook.getId());
