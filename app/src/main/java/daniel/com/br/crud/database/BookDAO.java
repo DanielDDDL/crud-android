@@ -28,6 +28,9 @@ public interface BookDAO {
     @Query("SELECT * FROM tbBooks")
     List<Book> findAllBooks();
 
+    @Query("SELECT last_insert_rowid() FROM tbBooks")
+    int getIdOfLastInsertedBook();
+
     @Insert(onConflict = IGNORE)
     void insertBook(Book book);
 
@@ -36,6 +39,10 @@ public interface BookDAO {
 
     @Delete
     void deleteBook(Book book);
+
+    @Query("DELETE FROM tbBooks " +
+           "WHERE id = :id")
+    void deleteBookWithId(int id);
 
     @Query("DELETE FROM tbBooks")
     void deleteAllBooks();

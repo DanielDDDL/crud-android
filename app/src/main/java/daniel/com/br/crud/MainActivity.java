@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //setting up the adapter that is going to control the fragments
         //adding the book fragment to it

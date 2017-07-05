@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,11 +195,15 @@ public class BookFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+
+            Log.e(BookFragment.class.getSimpleName(),"deleta livro passou");
+
             //position passed as argument
             int index = params[0];
 
             //deleting from the database
             //and from the current list
+            databaseCreator.getDatabase().tagsInBooksModel().deleteAllTagsForBookWithId(bookList.get(index).getId());
             databaseCreator.getDatabase().bookModel().deleteBook(bookList.get(index));
             bookList.remove(index);
 

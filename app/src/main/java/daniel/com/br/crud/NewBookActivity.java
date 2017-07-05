@@ -7,17 +7,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
+import daniel.com.br.crud.model.Tag;
+import daniel.com.br.crud.model.TagsInBooks;
 
 public class NewBookActivity extends AppCompatActivity {
 
     //widgets
     private EditText txtTitle, txtAuthor;
+    private TextView lblTags;
     private Button btnRegister;
     private Context context;
+
+    private List<Tag> mAllRegisteredTags,mSelectedTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,13 @@ public class NewBookActivity extends AppCompatActivity {
 
         //buttons click events
         btnRegister.setOnClickListener(new BtnRegisterOnClickListener());
+
+        lblTags = (TextView)findViewById(R.id.lblTags);
+        lblTags.setOnClickListener(new BtnSelectTagsOnClickListener());
+
+
+        //loading all options for registering tags
+        new LoadAllTagsTask().execute();
 
     }
 
@@ -53,12 +69,41 @@ public class NewBookActivity extends AppCompatActivity {
                 book.setAuthor(author);
 
                 //inserting book into the database
-                new InsertBookLoader().execute(book);
+                new InsertBookTask().execute(book);
             }
         }
     }
 
-    class InsertBookLoader extends AsyncTask<Book,Void,Void>{
+    private void showSelectionDialog(ISelectTagsDialogEvent onPositiveAnswer){
+        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,mAllRegisteredTags,mSelectedTags);
+        dialog.show(getSupportFragmentManager(),"select_tags_dialog");
+    }
+
+    private class BtnSelectTagsOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+
+            if(mSelectedTags == null)
+                mSelectedTags = new ArrayList<>();
+
+            showSelectionDialog(new ISelectTagsDialogEvent() {
+                @Override
+                public void run(List<Tag> selectedTags) {
+
+                    //getting the select tags from the dialog
+                    //adding it to the list of selected tags on the activity
+                    mSelectedTags.clear();
+                    mSelectedTags.addAll(selectedTags);
+
+                    //updating textview to represent new selected tags
+                    lblTags.setText(StringUtils.tagListToContinuousString(selectedTags));
+                }
+            });
+        }
+    }
+
+    class InsertBookTask extends AsyncTask<Book,Void,Void>{
 
         DatabaseCreator databaseCreator;
 
@@ -72,6 +117,19 @@ public class NewBookActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Book... params) {
             databaseCreator.getDatabase().bookModel().insertBook(params[0]);
+
+            //getting the id of the book inserted
+            int idBook = databaseCreator.getDatabase().bookModel().getIdOfLastInsertedBook();
+
+            if(mSelectedTags != null)
+                for(Tag tag : mSelectedTags){
+                    TagsInBooks tagsInBooks = new TagsInBooks();
+                    tagsInBooks.setBookId(idBook);
+                    tagsInBooks.setTagId(tag.getId());
+
+                    databaseCreator.getDatabase().tagsInBooksModel().insertTagInBook(tagsInBooks);
+                }
+
             return null;
         }
 
@@ -86,6 +144,42 @@ public class NewBookActivity extends AppCompatActivity {
             //clean fields
             txtTitle.setText("");
             txtAuthor.setText("");
+            lblTags.setText("Select Tags");
+
+            if(mSelectedTags != null)
+                mSelectedTags.clear();
+        }
+    }
+
+    class LoadAllTagsTask extends AsyncTask<Void,Void,List<Tag>>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Void... params) {
+            return databaseCreator.getDatabase().tagModel().findAllTags();
+        }
+
+        @Override
+        protected void onPostExecute(List<Tag> tags) {
+            super.onPostExecute(tags);
+            if(mAllRegisteredTags == null)
+                mAllRegisteredTags = new ArrayList<>();
+            else
+                mAllRegisteredTags.clear();
+
+            mAllRegisteredTags.addAll(tags);
+
+            //now is possible to select tags
+            //showing it to the user
+            lblTags.setText("Select Tags");
         }
     }
 

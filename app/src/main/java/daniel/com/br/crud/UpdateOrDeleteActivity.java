@@ -8,22 +8,32 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
+import daniel.com.br.crud.model.Tag;
+import daniel.com.br.crud.model.TagInBooksWithTitle;
+import daniel.com.br.crud.model.TagsInBooks;
 
 public class UpdateOrDeleteActivity extends AppCompatActivity {
 
     //widgets
     private EditText txtTitle, txtAuthor;
+    private TextView lblTags;
     private Button btnUpdate, btnDelete;
 
     private Context context;
     private Book activityBook;
+    private List<Tag> activityTags, allTagsRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +44,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
         //getting information from the intent
         Intent intent = getIntent();
-        int id = intent.getIntExtra("id",0);
+        int id = intent.getIntExtra("id",-1);
         String title = intent.getStringExtra("title");
         String author = intent.getStringExtra("author");
 
@@ -50,11 +60,17 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         txtAuthor = (EditText)findViewById(R.id.txtAuthor);
         txtAuthor.setText(activityBook.getAuthor());
 
+        lblTags = (TextView)findViewById(R.id.lblTags);
+        lblTags.setOnClickListener(new BtnSelectTagsOnClickListener());
+
         //setting buttons actions
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(new BtnUpdateOnClickListener());
         btnDelete = (Button)findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new BtnDeleteOnClickListener());
+
+        new LoadAllTagsTask().execute();
+        new LoadTagsForCurrentBookTask().execute(activityBook.getId());
     }
 
     private class BtnUpdateOnClickListener implements View.OnClickListener{
@@ -87,8 +103,13 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //confirming willing to delete book...
-                            new DeleteBookLoader().execute(activityBook);
+                            if(activityBook.getId() == 1)
+                                Log.e(UpdateBookLoader.class.getSimpleName(),"Invalid id");
+                            else{
+                                //confirming willing to delete book...
+                                new DeleteBookLoader().execute(activityBook);
+                            }
+
 
                         }
                     })
@@ -107,6 +128,30 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
         }
     }
 
+    private void showSelectionDialog(ISelectTagsDialogEvent onPositiveAnswer){
+        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,allTagsRegistered,activityTags);
+        dialog.show(getSupportFragmentManager(),"select_book_dialog");
+    }
+
+    private class BtnSelectTagsOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            showSelectionDialog(new ISelectTagsDialogEvent() {
+                @Override
+                public void run(List<Tag> selectedTags) {
+
+                    //changing the activityTags to be the selected ones
+                    activityTags.clear();
+                    activityTags.addAll(selectedTags);
+
+                    //updating lblTags
+                    lblTags.setText(StringUtils.tagListToContinuousString(selectedTags));
+                }
+            });
+        }
+    }
+
     class UpdateBookLoader extends AsyncTask<Book,Void,Void>{
 
         private DatabaseCreator databaseCreator;
@@ -120,7 +165,24 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Book... params) {
+            //updating book
             databaseCreator.getDatabase().bookModel().updateBook(params[0]);
+
+            //updating tags related to that book
+
+
+            //deleting previous tags
+            databaseCreator.getDatabase().tagsInBooksModel().deleteAllTagsForBookWithId(activityBook.getId());
+
+            //getting the relation objects
+            for (int i = 0; i < activityTags.size(); i++){
+                TagsInBooks newTagInBook = new TagsInBooks();
+                newTagInBook.setBookId(activityBook.getId());
+                newTagInBook.setTagId(activityTags.get(i).getId());
+                //inserting into the database
+                databaseCreator.getDatabase().tagsInBooksModel().insertTagInBook(newTagInBook);
+            }
+
             return null;
         }
 
@@ -154,7 +216,13 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Book... params) {
-            databaseCreator.getDatabase().bookModel().deleteBook(params[0]);
+
+            Book deletedBook = params[0];
+
+            //deleting corresponding tags
+            //and then the book itself
+            databaseCreator.getDatabase().tagsInBooksModel().deleteAllTagsForBookWithId(deletedBook.getId());
+            databaseCreator.getDatabase().bookModel().deleteBook(deletedBook);
             return null;
         }
 
@@ -173,6 +241,86 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
             //prevent from coming back to this activity if back button pressed
             finish();
         }
+    }
+
+    class LoadTagsForCurrentBookTask extends AsyncTask<Integer,Void,List<Tag>>{
+
+        DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Integer... params) {
+            //get tags related to the book with id passed as params[0]
+            int bookId = params[0];
+            List<TagInBooksWithTitle> tagsForBook = databaseCreator.getDatabase().tagsInBooksModel().findTagsWithNameForBookWithId(bookId);
+
+            //return tags gotten from the database
+            return convertTagsWithtitleToTags(tagsForBook);
+        }
+
+        @Override
+        protected void onPostExecute(List<Tag> databaseTags) {
+            super.onPostExecute(databaseTags);
+
+            //adding tags for the activity tags
+            if(activityTags == null)
+                activityTags = new ArrayList<>();
+            else
+                activityTags.clear();
+
+            activityTags.addAll(databaseTags);
+
+            //set a text on lblTags equivalent to the tags from the database
+            lblTags.setText(StringUtils.tagListToContinuousString(activityTags));
+        }
+    }
+
+    class LoadAllTagsTask extends AsyncTask<Void,Void,List<Tag>>{
+
+        private DatabaseCreator databaseCreator;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            databaseCreator = DatabaseCreator.getsInstance(getApplicationContext());
+            databaseCreator.createDatabase(getApplicationContext());
+        }
+
+        @Override
+        protected List<Tag> doInBackground(Void... params) {
+            return databaseCreator.getDatabase().tagModel().findAllTags();
+        }
+
+        @Override
+        protected void onPostExecute(List<Tag> tags) {
+            super.onPostExecute(tags);
+            if(allTagsRegistered == null)
+                allTagsRegistered = new ArrayList<>();
+            else
+                allTagsRegistered.clear();
+
+            allTagsRegistered.addAll(tags);
+
+        }
+    }
+
+    private List<Tag> convertTagsWithtitleToTags(List<TagInBooksWithTitle> listTagsWithTitles){
+        List<Tag> listTags = new ArrayList<>();
+        for (int i = 0; i < listTagsWithTitles.size(); i++){
+            Tag tag = new Tag();
+            tag.setId(listTagsWithTitles.get(i).getTagId());
+            tag.setText(listTagsWithTitles.get(i).getText());
+
+            listTags.add(tag);
+        }
+
+        return listTags;
     }
 
     /**
