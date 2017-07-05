@@ -31,16 +31,19 @@
             android:id="@+id/txtAuthor"
             android:hint="Author" />
 
+        <TextView
+            android:id="@+id/lblTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:clickable="true"
+            android:text="Loading..."
+            android:background="?android:attr/selectableItemBackground"/>
+
         <Button
             android:text="Register Book"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnRegister" />
-
-        <Button
-            android:text="Go Back"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnBack" />
     </LinearLayout>
 </RelativeLayout>
