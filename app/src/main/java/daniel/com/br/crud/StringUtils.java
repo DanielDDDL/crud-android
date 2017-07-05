@@ -1,5 +1,7 @@
 package daniel.com.br.crud;
 
+import android.util.Log;
+
 import java.util.List;
 
 import daniel.com.br.crud.model.Tag;
@@ -51,6 +53,24 @@ public class StringUtils {
         }
 
         return continuousString;
+    }
+
+    /**
+     * check if two strings are equal to each other
+     * dealing with the possibility of one of them being null
+     * */
+    public static boolean stringEquals(String first, String second){
+
+        Log.e(StringUtils.class.getSimpleName(),first + " = " + second + "?");
+
+        if(first == null && second != null || first != null && second == null)
+            return false;
+
+        else if(first == null && second == null)
+            return true;
+
+        return first.equals(second);
+
     }
 
 }

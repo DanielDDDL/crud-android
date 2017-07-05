@@ -75,7 +75,7 @@ public class NewBookActivity extends AppCompatActivity {
     }
 
     private void showSelectionDialog(ISelectTagsDialogEvent onPositiveAnswer){
-        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,mAllRegisteredTags);
+        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,mAllRegisteredTags,mSelectedTags);
         dialog.show(getSupportFragmentManager(),"select_tags_dialog");
     }
 

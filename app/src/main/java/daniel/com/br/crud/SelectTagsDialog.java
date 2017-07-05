@@ -19,21 +19,23 @@ import daniel.com.br.crud.model.Tag;
 
 public class SelectTagsDialog extends DialogFragment {
 
-    private ISelectTagsDialogEvent mOnPositeveAnswer;
+    private ISelectTagsDialogEvent mOnPositiveAnswer;
     private List<Tag> mRegisteredTags;
+    private List<Tag> mSelectedTags;
 
     public SelectTagsDialog(){
         //constructor must be empty
     }
 
-    public static SelectTagsDialog newInstance(ISelectTagsDialogEvent onPositiveAnswer, List<Tag> registeredTags){
+    public static SelectTagsDialog newInstance(ISelectTagsDialogEvent onPositiveAnswer, List<Tag> registeredTags, List<Tag> selectedTags){
 
         //TODO: I know this is not the way to do these things
         //TODO: I will study more about saving things to Bundle
         //TODO: But for now, just to get this thing over, let's do it like this, ok?
         SelectTagsDialog frag = new SelectTagsDialog();
-        frag.mOnPositeveAnswer = onPositiveAnswer;
+        frag.mOnPositiveAnswer = onPositiveAnswer;
         frag.mRegisteredTags = registeredTags;
+        frag.mSelectedTags = selectedTags;
 
         return frag;
     }
@@ -70,11 +72,12 @@ public class SelectTagsDialog extends DialogFragment {
 
     public Dialog createSelectionDialog(String[] tagsTitle){
 
-        final List<Integer> selectedItems = new ArrayList<>();
+        boolean [] selectedTagsBooleanArray = gettingSelectedTagsArray(mRegisteredTags,mSelectedTags);
+        final List<Integer> selectedItems = getListOfSelectedItems(selectedTagsBooleanArray);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Tags:")
-        .setMultiChoiceItems(tagsTitle, null, new DialogInterface.OnMultiChoiceClickListener() {
+        .setMultiChoiceItems(tagsTitle, selectedTagsBooleanArray, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 //if selected
@@ -99,7 +102,7 @@ public class SelectTagsDialog extends DialogFragment {
                 }
 
                 //running event passed to this dialog on creation
-                mOnPositeveAnswer.run(addedTags);
+                mOnPositiveAnswer.run(addedTags);
 
             }
         })
@@ -114,4 +117,75 @@ public class SelectTagsDialog extends DialogFragment {
 
         return builder.create();
     }
+
+    /**
+     * return a array of boolean to be used on the creation of the dialog
+     * */
+    private boolean[] gettingSelectedTagsArray (List<Tag> allRegisteredTags,List<Tag> selectedTags){
+
+        //none of the list can be null
+        if(selectedTags == null || allRegisteredTags == null)
+            throw new IllegalStateException();
+
+        boolean [] selectionArray = new boolean [allRegisteredTags.size()];
+
+        for(int i = 0; i < allRegisteredTags.size(); i++){
+            if(isTagIn(allRegisteredTags.get(i),selectedTags)){
+                selectionArray[i] = true;
+            } else {
+                selectionArray[i] = false;
+            }
+        }
+
+        Log.e(SelectTagsDialog.class.getSimpleName(),"Number of selectedTags: " + selectedTags.size());
+        Log.e(SelectTagsDialog.class.getSimpleName(),"Number of registeredTags: " + allRegisteredTags.size());
+        Log.e(SelectTagsDialog.class.getSimpleName(),"Number of true values: " + countTrueValues(selectionArray));
+        return selectionArray;
+    }
+
+    /**
+     * return true if currentTag in is selectedTags
+     * false otherwise
+     * */
+    private boolean isTagIn (Tag currentTag, List<Tag> selectedTags){
+
+        //iterating on the selected tags array
+        for(int i = 0; i < selectedTags.size(); i++)
+            if(currentTag.equals(selectedTags.get(i))) {
+                Log.e(SelectTagsDialog.class.getSimpleName(),"Found on the list");
+                return true; //found
+            }
+
+        return false;
+    }
+
+    /**
+     * TESTS PURPOSES. TO BE DELETED
+     *
+     * */
+    private int countTrueValues(boolean[] arrayToBeChecked){
+        int count = 0;
+        for(int i = 0; i < arrayToBeChecked.length; i++)
+            if(arrayToBeChecked[i] == true)
+                count++;
+
+
+        return count;
+    }
+
+    /**
+     * get the array defining what books were selected
+     * return a List of Integers correspondents
+     * */
+    private List<Integer> getListOfSelectedItems(boolean[] selectedItens){
+
+        List<Integer> listOfSelectedItens = new ArrayList<>();
+        for(int i = 0; i < selectedItens.length; i++)
+            if(selectedItens[i])
+                listOfSelectedItens.add(i);
+
+        return listOfSelectedItens;
+
+    }
+
 }

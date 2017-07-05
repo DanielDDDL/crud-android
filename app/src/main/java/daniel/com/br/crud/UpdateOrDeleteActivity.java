@@ -129,7 +129,7 @@ public class UpdateOrDeleteActivity extends AppCompatActivity {
     }
 
     private void showSelectionDialog(ISelectTagsDialogEvent onPositiveAnswer){
-        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,allTagsRegistered);
+        SelectTagsDialog dialog = SelectTagsDialog.newInstance(onPositiveAnswer,allTagsRegistered,activityTags);
         dialog.show(getSupportFragmentManager(),"select_book_dialog");
     }
 
