@@ -80,20 +80,21 @@ public class NewBookActivity extends AppCompatActivity {
     }
 
     private class BtnSelectTagsOnClickListener implements View.OnClickListener {
+
         @Override
         public void onClick(View view) {
+
+            if(mSelectedTags == null)
+                mSelectedTags = new ArrayList<>();
+
             showSelectionDialog(new ISelectTagsDialogEvent() {
                 @Override
                 public void run(List<Tag> selectedTags) {
-
-                    if(mSelectedTags == null)
-                        mSelectedTags = new ArrayList<>();
 
                     //getting the select tags from the dialog
                     //adding it to the list of selected tags on the activity
                     mSelectedTags.clear();
                     mSelectedTags.addAll(selectedTags);
-
 
                     //updating textview to represent new selected tags
                     lblTags.setText(StringUtils.tagListToContinuousString(selectedTags));
