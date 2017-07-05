@@ -28,6 +28,9 @@ public interface BookDAO {
     @Query("SELECT * FROM tbBooks")
     List<Book> findAllBooks();
 
+    @Query("SELECT last_insert_rowid() FROM tbBooks")
+    int getIdOfLastInsertedBook();
+
     @Insert(onConflict = IGNORE)
     void insertBook(Book book);
 
