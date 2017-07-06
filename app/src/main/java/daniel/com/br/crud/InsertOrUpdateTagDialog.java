@@ -23,7 +23,7 @@ public class InsertOrUpdateTagDialog extends DialogFragment {
         //must be empty
     }
 
-    public InsertOrUpdateTagDialog newInstance(ITagTextEvent onPositiveAnswer, String initialText){
+    public static InsertOrUpdateTagDialog newInstance(ITagTextEvent onPositiveAnswer, String initialText){
 
         //TODO: I know this is not the way to do these things
         //TODO: I will study more about saving things to Bundle
