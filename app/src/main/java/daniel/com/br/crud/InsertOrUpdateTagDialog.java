@@ -1,9 +1,14 @@
 package daniel.com.br.crud;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 /**
  * Created by Dias on 05/07/2017.
@@ -35,6 +40,36 @@ public class InsertOrUpdateTagDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
+
+        //utils for creating dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        //inflating view based on our layout
+        View rootView = inflater.inflate(R.layout.dialog_tag_text_input, null);
+        builder.setView(rootView);
+
+        //defining text based on wether or not the text passed is null
+        String title = mInitialText == null ? "Insert new tag" : "Update tag";
+        String posButton = mInitialText == null ? "New tag" : "Update";
+
+        final EditText text = (EditText)rootView.findViewById(R.id.txt_tag);
+
+        builder.setTitle(title);
+        builder.setPositiveButton(posButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mOnPositiveAnswer.run(text.getText().toString());
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        return builder.create();
     }
 }
