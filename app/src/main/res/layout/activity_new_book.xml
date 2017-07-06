@@ -31,8 +31,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        
+            android:layout_height="wrap_content"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,15 +49,23 @@
             android:id="@+id/lblTags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18dp"
+            android:textSize="15dp"
+            android:paddingTop="5dp"
             android:clickable="true"
             android:text="Loading..."
-            android:background="?android:attr/selectableItemBackground"/>
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableStart="@android:drawable/ic_menu_edit"
+            android:drawableLeft="@android:drawable/ic_menu_edit"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"/>
 
         <Button
+            android:id="@+id/btnRegister"
             android:text="Register Book"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnRegister" />
+            android:layout_marginTop="35dp"
+            android:background="@drawable/button_shape"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </RelativeLayout>
