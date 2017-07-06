@@ -43,7 +43,7 @@
                 android:ems="10"
                 android:id="@+id/txtAuthor"
                 android:hint="Author" />
-            
+
         </android.support.design.widget.TextInputLayout>
 
         <TextView
