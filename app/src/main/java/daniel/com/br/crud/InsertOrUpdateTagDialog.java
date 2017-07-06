@@ -54,6 +54,7 @@ public class InsertOrUpdateTagDialog extends DialogFragment {
         String posButton = mInitialText == null ? "New tag" : "Update";
 
         final EditText text = (EditText)rootView.findViewById(R.id.txt_tag);
+        text.setText(mInitialText != null ? mInitialText : "");
 
         builder.setTitle(title);
         builder.setPositiveButton(posButton, new DialogInterface.OnClickListener() {
