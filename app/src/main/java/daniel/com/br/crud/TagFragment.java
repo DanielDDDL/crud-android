@@ -62,43 +62,24 @@ public class TagFragment extends Fragment {
                 //clicked tag
                 final Tag selectedTag = mTagList.get(position);
 
-                //EdiText that is going to be featured on the dialog
-                final EditText txtTagName = new EditText(mContext);
-                txtTagName.setInputType(InputType.TYPE_CLASS_TEXT); //data that can be inserted
-                txtTagName.setText(selectedTag.getText());
+                createDialog(new ITagTextEvent() {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setView(txtTagName); //adding EditText
+                    @Override
+                    public void run(String textInserted) {
+                        if(!textInserted.isEmpty()){
+                            //executing update
+                            String oldText = selectedTag.getText();
+                            String newText = textInserted;
+                            new LoadEditTag(position).execute(oldText,newText);
 
-                //setting up dialog and its components
-                builder.setTitle("Update Tag:")
-                        .setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        } else {
+                            //informing error
+                            String errorMessage = "You must fill the specified field";
+                            Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
 
-                                //if not empty...
-                                String nameInserted = txtTagName.getText().toString();
-                                if (!nameInserted.isEmpty()){
-                                    //executing update
-                                    String oldText = selectedTag.getText();
-                                    String newText = txtTagName.getText().toString();
-                                    new LoadEditTag(position).execute(oldText,newText);
-                                } else {
-                                    //informing error
-                                    String errorMessage = "You must fill the specified field";
-                                    Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
-                                }
-                            }})
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //cancelling dialog
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-
+                        }
+                    }
+                }, selectedTag.getText());
             }
         });
         mTagAdapter.setDeleteEvent(new IEvent() {
@@ -158,43 +139,35 @@ public class TagFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //EdiText that is going to be featured on the dialog
-                final EditText txtTagName = new EditText(mContext);
-                txtTagName.setInputType(InputType.TYPE_CLASS_TEXT); //data that can be inserted
+                createDialog(new ITagTextEvent() {
+                    @Override
+                    public void run(String textInserted) {
+                        //what will happen when the user presses ok
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setView(txtTagName); //adding EditText
+                        //if not empty...
+                        if (!textInserted.isEmpty()){
+                            //inserting into the database
+                            new LoadInsertTag().execute(textInserted);
 
-                //setting up dialog and its components
-                builder.setTitle("Insert new Tag:")
-                        .setPositiveButton("Insert", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //if not empty...
-                                String nameInserted = txtTagName.getText().toString();
-                                if (!nameInserted.isEmpty()){
-                                    //inserting into the database
-                                    new LoadInsertTag().execute(nameInserted);
-                                } else {
-                                    //informing error
-                                    String errorMessage = "You must fill the specified field";
-                                    Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
+                        } else {
+                            //informing error
+                            String errorMessage = "You must fill the specified field";
+                            Toast.makeText(mContext,errorMessage,Toast.LENGTH_SHORT).show();
 
-                                }
-                            }})
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //cancelling dialog
-                                dialog.cancel();
-                            }
-                        });
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                        }
+                    }
+                }, null); //null because it's creating a new tag
             }
         });
 
+    }
+
+    /**
+     * null if you are going to insert a new tag
+     * */
+    private void createDialog(ITagTextEvent onPositiveAnswer,String initialText){
+        InsertOrUpdateTagDialog dialog = InsertOrUpdateTagDialog.newInstance(onPositiveAnswer,initialText);
+        dialog.show(getFragmentManager(),"text_tag_dialog");
     }
 
     @Override
