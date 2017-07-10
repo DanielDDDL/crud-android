@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
@@ -13,54 +13,65 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import daniel.com.br.crud.model.Tag;
+import daniel.com.br.crud.R;
+import daniel.com.br.crud.model.Book;
+import daniel.com.br.crud.view.callbacks.IEvent;
 
 /**
- * Created by Dias on 20/06/2017.
+ * Created by Dias on 11/06/2017.
  */
 
-public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.MyViewHolder>{
+public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<Tag> mTagList;
-    private IEvent mEditEvent;
-    private IEvent mDeleteEvent;
+    private List<Book> bookList;
+    private IEvent editEvent;
+    private IEvent deleteEvent;
 
     //defines whether of not the list is empty
     private static final int VIEW_TYPE_EMPTY =  0;
     private static final int VIEW_TYPE_NOT_EMPTY = 1;
 
-    public TagRecyclerAdapter(Context context, List<Tag> tagList){
-        mContext = context;
-        mTagList = tagList;
+    //constructors
+    public BookRecyclerAdapter(Context mContext, List<Book> bookList){
+        this.mContext = mContext;
+        this.bookList = bookList;
+
     }
 
-    //passing on click action right from the start
-    public TagRecyclerAdapter(Context context, List<Tag> tagList, IEvent editEvent, IEvent deleteEvent){
-        mContext = context;
-        mTagList = tagList;
-        mEditEvent = editEvent;
-        mDeleteEvent = deleteEvent;
+    //in case there is the need to implement the buttons action right from the start
+    public BookRecyclerAdapter(Context mContext, List<Book> bookList, IEvent editEvent, IEvent deleteEvent){
+        this.mContext = mContext;
+        this.bookList = bookList;
+        this.editEvent = editEvent;
+        this.deleteEvent = deleteEvent;
+
     }
 
+    /**
+     * the view and its components
+     * */
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView lblTagName;
-        ImageView ivOverflow;
+        //widgets held by the adapter
+        public TextView lblTitle, lblAuthor;
+        public ImageView ivOverflow; //clickable menu
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            lblTagName = (TextView) itemView.findViewById(R.id.txt_name_tag);
+            lblTitle = (TextView) itemView.findViewById(R.id.txt_title);
+            lblAuthor = (TextView) itemView.findViewById(R.id.txt_author);
             ivOverflow = (ImageView) itemView.findViewById(R.id.overflow);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(mTagList.size() == 0)
+        if (bookList.size() == 0){
             return VIEW_TYPE_EMPTY;
-        else
+        } else {
             return VIEW_TYPE_NOT_EMPTY;
+        }
     }
 
     @Override
@@ -74,9 +85,10 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         if (viewType == VIEW_TYPE_EMPTY){
             viewItem = layoutInflater.inflate(R.layout.empty_list_item,parent,false);
         } else {
-            viewItem = layoutInflater.inflate(R.layout.tag_card, parent, false);
+            viewItem = layoutInflater.inflate(R.layout.book_card, parent, false);
         }
 
+        //creating item out of the view creating from inflating
         return new MyViewHolder(viewItem);
     }
 
@@ -86,8 +98,10 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         //adding information to item(s) if the list if not empty
         int viewType = getItemViewType(position);
         if (viewType == VIEW_TYPE_NOT_EMPTY){
-            Tag tag = mTagList.get(position);
-            holder.lblTagName.setText(tag.getText());
+            Book book = bookList.get(position);
+            holder.lblTitle.setText(book.getTitle());
+            holder.lblAuthor.setText(book.getAuthor());
+
             //menu click listener
             holder.ivOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,11 +110,10 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
                 }
             });
         }
+
+
     }
 
-    /**
-     * executed when overflow clicked
-     * */
     private void showPopupMenu (final View view, final int position){
         //inflating menu
         PopupMenu popup = new PopupMenu(mContext, view);
@@ -111,10 +124,10 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_edit:
-                        mEditEvent.run(view,position);
+                        editEvent.run(view,position);
                         return true;
                     case R.id.action_delete:
-                        mDeleteEvent.run(view,position);
+                        deleteEvent.run(view,position);
                         return true;
                     default:
                 }
@@ -127,22 +140,21 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
     @Override
     public int getItemCount() {
-        //when the list is empty, there is one item
-        //the item showing that the list is empty
-        if (mTagList.size() == 0)
+        //there will be an item if the list is empty
+        if (bookList.size() == 0)
             return 1;
 
-        //otherwise, the normal quantity of items on the list
-        return mTagList.size();
+        return bookList.size();
+
     }
 
     //setters for the buttons action
     public void setEditEvent(IEvent editEvent) {
-        mEditEvent = editEvent;
+        this.editEvent = editEvent;
     }
 
     public void setDeleteEvent(IEvent deleteEvent) {
-        mDeleteEvent = deleteEvent;
+        this.deleteEvent = deleteEvent;
     }
 
 }

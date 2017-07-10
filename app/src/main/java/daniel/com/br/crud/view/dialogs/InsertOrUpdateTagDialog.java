@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,6 +9,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
+import daniel.com.br.crud.R;
+import daniel.com.br.crud.view.callbacks.ITagTextEvent;
 
 /**
  * Created by Dias on 05/07/2017.

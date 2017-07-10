@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.callbacks;
 
 /**
  * Created by Dias on 05/07/2017.

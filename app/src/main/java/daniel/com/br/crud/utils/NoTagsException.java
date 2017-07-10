@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.utils;
 
 /**
  * Created by Dias on 01/07/2017.

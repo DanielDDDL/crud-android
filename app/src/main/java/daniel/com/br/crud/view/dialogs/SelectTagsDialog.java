@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import daniel.com.br.crud.model.Tag;
+import daniel.com.br.crud.utils.NoTagsException;
+import daniel.com.br.crud.utils.StringUtils;
+import daniel.com.br.crud.view.callbacks.ISelectTagsDialogEvent;
 
 /**
  * Created by Dias on 01/07/2017.
