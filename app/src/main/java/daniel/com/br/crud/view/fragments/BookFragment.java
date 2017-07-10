@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +20,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import daniel.com.br.crud.R;
 import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
+import daniel.com.br.crud.view.activities.NewBookActivity;
+import daniel.com.br.crud.view.activities.UpdateOrDeleteActivity;
+import daniel.com.br.crud.view.adapters.BookRecyclerAdapter;
+import daniel.com.br.crud.view.callbacks.IEvent;
 
 public class BookFragment extends Fragment {
 

@@ -2,9 +2,8 @@ package daniel.com.br.crud.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.util.Log;
 
-import static daniel.com.br.crud.StringUtils.stringEquals;
+import static daniel.com.br.crud.utils.StringUtils.stringEquals;
 
 /**
  * Created by Dias on 16/06/2017.

@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,19 +11,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import daniel.com.br.crud.view.dialogs.InsertOrUpdateTagDialog;
+import daniel.com.br.crud.R;
 import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Tag;
+import daniel.com.br.crud.view.adapters.TagRecyclerAdapter;
+import daniel.com.br.crud.view.callbacks.IEvent;
+import daniel.com.br.crud.view.callbacks.ITagTextEvent;
 
 public class TagFragment extends Fragment {
 

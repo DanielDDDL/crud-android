@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.activities;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -13,10 +13,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import daniel.com.br.crud.view.callbacks.ISelectTagsDialogEvent;
+import daniel.com.br.crud.R;
+import daniel.com.br.crud.view.dialogs.SelectTagsDialog;
 import daniel.com.br.crud.database.DatabaseCreator;
 import daniel.com.br.crud.model.Book;
 import daniel.com.br.crud.model.Tag;
 import daniel.com.br.crud.model.TagsInBooks;
+import daniel.com.br.crud.utils.StringUtils;
 
 public class NewBookActivity extends AppCompatActivity {
 

@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.activities.MainActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -18,16 +18,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UpdateOrDeleteActivity">
+            android:name=".view.activities.UpdateOrDeleteActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="daniel.com.br.crud.MainActivity"/>
+                android:value="daniel.com.br.crud.view.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".NewBookActivity">
+            android:name=".view.activities.NewBookActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="daniel.com.br.crud.MainActivity"/>
+                android:value="daniel.com.br.crud.view.activities.MainActivity"/>
         </activity>
     </application>
 

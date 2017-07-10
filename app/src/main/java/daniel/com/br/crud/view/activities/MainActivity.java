@@ -1,4 +1,4 @@
-package daniel.com.br.crud;
+package daniel.com.br.crud.view.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,6 +11,10 @@ import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import daniel.com.br.crud.view.fragments.BookFragment;
+import daniel.com.br.crud.R;
+import daniel.com.br.crud.view.fragments.TagFragment;
 
 public class MainActivity extends AppCompatActivity {
 
